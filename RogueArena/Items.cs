@@ -1,7 +1,19 @@
-﻿public class ArmorItem
+﻿public interface ItemType
+{
+    public TypeOfItem typeOfItem { get; }
+}
+
+public enum TypeOfItem
+{
+    Armor,
+    Weapon,
+    Shield
+}
+
+public class ArmorItem : ItemType
 {
     public int armor { get; private set; }
-
+    public TypeOfItem typeOfItem { get; private set; } = TypeOfItem.Armor;
     public ArmorItem()
     {
         Random random = new Random();
@@ -9,12 +21,14 @@
     }
 }
 
-public class WeaponItem
+public class WeaponItem : ItemType
 {
     public int atackValue { get; private set; }
-    public WeaponItem() 
+    public TypeOfItem typeOfItem { get; private set; } = TypeOfItem.Weapon;
+
+    public WeaponItem()
     {
-        Random random =new Random();
+        Random random = new Random();
         atackValue = random.Next(0, 16);
     }
 }
