@@ -8,7 +8,7 @@ public class Character
     public List<ItemType> allItems = new List<ItemType>();
     public Character(Position pos)
     {
-        GetRandomEQ();
+        GetRandomEQ(5);
 
         this.pos = pos;
         level = new Level(this);
@@ -61,11 +61,11 @@ public class Character
         other.stats.Hp = -this.stats.attackSum;
     }
 
-    private void GetRandomEQ()
+    private void GetRandomEQ(int sumOfItems)
     {
         Random rand = new Random();
-        int numOfWeapons = rand.Next(0, 5);
-        int numOfArmor = 5 - numOfWeapons;
+        int numOfWeapons = rand.Next(0, sumOfItems);
+        int numOfArmor = sumOfItems - numOfWeapons;
         for (int i = 0; i < numOfWeapons; i++)
         {
             allItems.Add(new WeaponItem());
