@@ -8,7 +8,7 @@
 
     private int defense;
     public float shield { get; private set; }
-    private float maxShield;//=(def*1.5 + str*1.5) *1.2 * lvl
+    public float maxShield { get; private set; }//=(def*1.5 + str*1.5) *1.2 * lvl
     private bool isShielded = true;
 
     public int armorSum { get; private set; }
@@ -71,7 +71,7 @@
     {
         float damage = -value;
         float damageAfterArmor;
-        damageAfterArmor = damage * (1.0f - (armorSum / 100.0f));
+        damageAfterArmor = damage / (1.0f + (armorSum / 50.0f));
         Console.WriteLine("damage b4 armor :");
         Console.WriteLine(damage);
         Console.WriteLine("damage after armor :");

@@ -16,15 +16,10 @@ public class Character
     }
     public void DebugShowStats()
     {
-        Console.Write(stats.Hp);
-        Console.Write(" / ");
-        Console.WriteLine(stats.maxHp);
-        Console.Write(stats.shield);
-        Console.WriteLine(" shield");
-        Console.Write(stats.armorSum);
-        Console.WriteLine(" armor");
-        Console.Write(stats.attackSum);
-        Console.WriteLine(" attack");
+        Console.WriteLine($"{stats.Hp} / {stats.maxHp} HP");
+        Console.WriteLine($"{stats.shield} / {stats.maxShield} shield");
+        Console.WriteLine($"{stats.armorSum} armor");
+        Console.WriteLine($"{stats.attackSum} attack");
 
     }
 

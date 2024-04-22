@@ -2,29 +2,6 @@
 Character player = new Character(new Position(1, 1));
 Character enemy = new Character(new Position(2, 2));
 
-
-/*player.DebugShowStats();
-player.stats.Hp = -100;
-player.DebugShowStats();
-
-player.stats.Hp = -12;
-player.DebugShowStats();
-
-
-player.level.Exp = 3;
-Console.WriteLine(player.level.Exp);
-Console.WriteLine(player.level.Lvl);
-player.level.Exp = 3;
-Console.WriteLine(player.level.Exp);
-Console.WriteLine(player.level.Lvl);
-
-player.DebugShowStats();
-
-player.stats.Hp = -100;
-player.DebugShowStats();
-
-*/
-
 Console.WriteLine("Player stats:");
 player.DebugShowStats();
 Console.WriteLine("Enemy stats");
