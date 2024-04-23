@@ -8,7 +8,7 @@ public class Level
     public Level(Character ownerPlayer)
     {
         exp = 0;
-        lvl = 10;
+        lvl = 1;
         owner = ownerPlayer;
 
     }

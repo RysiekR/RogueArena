@@ -6,9 +6,11 @@ public class Character
     public Stats stats;
     public Level level;
     public List<ItemType> allItems = new List<ItemType>();
+    public string name;
     public Character(Position pos)
     {
-        GetRandomEQ(5);
+        GetRandomEQ(3);
+        name = NameGenerator.GetName();
 
         this.pos = pos;
         level = new Level(this);

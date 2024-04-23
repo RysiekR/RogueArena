@@ -11,11 +11,13 @@
     public float maxShield { get; private set; }//=(def*1.5 + str*1.5) *1.2 * lvl
     private bool isShielded = true;
 
-    public int armorSum { get; private set; }
-    private int armorFromDefense;
+    public float armorSum { get; private set; }
+    private float armorFromDefense;
 
     public float attackSum { get; private set; }
     private float attackPowerFromStats;
+
+    //Add vittality stat and regen method
 
     public Stats(int str, int def, Character ownerPlayer)
     {
@@ -71,7 +73,7 @@
     {
         float damage = -value;
         float damageAfterArmor;
-        damageAfterArmor = damage / (1.0f + (armorSum / 50.0f));
+        damageAfterArmor = damage / (1.0f + (armorSum / 10.0f));
         Console.WriteLine("damage b4 armor :");
         Console.WriteLine(damage);
         Console.WriteLine("damage after armor :");
@@ -105,10 +107,10 @@
         shield = maxShield;
         isShielded = true;
 
-        armorFromDefense = (defense);
+        armorFromDefense = (defense) * owner.level.Lvl * 0.5f;
         armorSum = armorFromDefense + owner.ArmorFromArmorItems() + 10;
 
-        attackPowerFromStats = strenght * owner.level.Lvl * 0.5f;
+        attackPowerFromStats = strenght * owner.level.Lvl * 0.3f;
         attackSum = attackPowerFromStats + owner.AttackPowerFromItems() + 1;
 
     }
