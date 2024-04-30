@@ -1,4 +1,14 @@
-﻿
+﻿Console.ReadKey();
+
+while (true) 
+{
+    Map map = new Map(Sprites.miniMapEmpty);
+    map.PrintMap();
+
+    Console.ReadKey();
+}
+
+
 bool continueLoop = true;
 do
 {
@@ -12,3 +22,5 @@ player.name = "Player";
         break;
     }
 }while(continueLoop);
+
+
