@@ -51,7 +51,7 @@
         enemyList = new List<Character>();
         for (int i = 0; i < howMany; i++)
         {
-            enemyList.Add(new Character(new(i + Sprites.spriteSize, i + Sprites.spriteSize)));
+            enemyList.Add(new Character(new(i + Sprites.spriteSize, i + Sprites.spriteSize),this));
         }
 
     }
@@ -134,6 +134,7 @@ public static class Sprites
             case MapTileEnum.wallWindow: return '/';
             case MapTileEnum.air: return ' ';
             case MapTileEnum.grass: return ',';
+            case MapTileEnum.player: return '@';
             default: return ' ';
         }
     }

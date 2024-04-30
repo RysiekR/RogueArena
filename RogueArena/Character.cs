@@ -2,6 +2,7 @@
 
 public class Character
 {
+    public Map currentMap;
     public Position pos;
     public Stats stats;
     public Level level;
@@ -9,7 +10,7 @@ public class Character
     public string name;
     private Dictionary<ConsoleKey, Action> movementDictionary;
     private ConsoleKey movementKey;
-    public Character(Position pos)
+    public Character(Position pos, Map currentMap)
     {
         GetRandomEQ(3);
         name = NameGenerator.GetName();
@@ -19,11 +20,13 @@ public class Character
         stats = new Stats(10, 10, this);
         movementDictionary = new()
     {
-        {ConsoleKey.W, () => this.pos.row-- },
-        {ConsoleKey.S, () => this.pos.row++ },
-        {ConsoleKey.A, () => this.pos.col-- },
-        {ConsoleKey.D, () => this.pos.col++ },
+        {ConsoleKey.W, () => this.pos.row=-1 },
+        {ConsoleKey.S, () => this.pos.row=1 },
+        {ConsoleKey.A, () => this.pos.col=-1 },
+        {ConsoleKey.D, () => this.pos.col=1 },
     };
+        this.currentMap = currentMap;
+
     }
     public void DebugShowStats()
     {
@@ -82,7 +85,7 @@ public class Character
         }
 
     }
-    public void MakeAMove()
+    /*public void MakeAMove()
     {
         Position previousPosition = new Position(pos);
         //get new position
@@ -91,21 +94,43 @@ public class Character
         if (movementDictionary.TryGetValue(movementKey, out Action movementAction))
         {
             movementAction?.Invoke();
-            /*if (movementAction != null)
-            {
-            movementAction();
-            }*/
         }
-    }
-   /* public void MakeAMove()
+    }*/
+    public void MakeAMove()
     {
+        bool canMove = true;
+        //save last position
         Position previousPosition = new Position(pos);
+        //get input and 
         movementKey = Console.ReadKey(true).Key;
         if (movementDictionary.ContainsKey(movementKey))
         {
             Action movementAction = movementDictionary[movementKey];
             movementAction();
         }
-    }*/
+        if (canMove)
+        {
+            PutCharacterOnMap();
+            PutAirInTile(previousPosition);
+        }
+    }
+    private void PutCharacterOnMap()
+    {
+        currentMap.mapOfEnums[pos.col, pos.row] = MapTileEnum.player;
+        Console.SetCursorPosition(pos.col, pos.row);
+        Console.Write(Sprites.GetCharFromEnum(currentMap.mapOfEnums[pos.col,pos.row]));
+
+    }
+    private void PutAirInTile(Position position)
+    {
+        currentMap.mapOfEnums[position.col, position.row] = MapTileEnum.air;
+        Console.SetCursorPosition(position.col, position.row);
+        Console.Write(Sprites.GetCharFromEnum(currentMap.mapOfEnums[position.col, position.row]));
+
+    }
+    public void InitializeCharacter()
+    {
+        PutCharacterOnMap();
+    }
 }
 

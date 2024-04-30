@@ -1,14 +1,16 @@
 ﻿Console.ReadKey();
-    Map map = new Map(Sprites.miniMapEmpty);
-
-while (true) 
+Map map = new Map(Sprites.miniMapEmpty);
+Character player = new(new(5,5),map);
+player.name = "Player";
+map.PrintMap();
+player.InitializeCharacter();
+while (true)
 {
-    map.PrintMap();
-
-    Console.ReadKey();
+    Console.CursorVisible = false;
+    player.MakeAMove();
 }
 
-
+/*
 bool continueLoop = true;
 do
 {
@@ -24,3 +26,4 @@ player.name = "Player";
 }while(continueLoop);
 
 
+*/
