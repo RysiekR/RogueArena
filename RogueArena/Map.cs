@@ -3,7 +3,7 @@
     private int mapaHeight;
     private int mapaWidth;
     public MapTileEnum[,] mapOfEnums;
-    public List<Character> enemyList;
+    public List<Enemy> enemyList;
     public Map(string[] miniMapFromSprites)
     {
         if (mapOfEnums == null)
@@ -48,10 +48,10 @@
     }
     private void GenerateEnemies(int howMany)
     {
-        enemyList = new List<Character>();
+        enemyList = new List<Enemy>();
         for (int i = 0; i < howMany; i++)
         {
-            enemyList.Add(new Character(new(i + Sprites.spriteSize, i + Sprites.spriteSize),this));
+            enemyList.Add(new Enemy(new(i + Sprites.spriteSize, i + Sprites.spriteSize),this));
         }
 
     }
@@ -84,6 +84,19 @@
                 Console.Write(Sprites.GetCharFromEnum(mapOfEnums[i, j]));
             }
         }
+    }
+    public Character GetCharacterInPosition(Position position)
+    {
+        Character temp = null; // Inicjalizacja zmiennej temp wartością null
+        foreach (Character character in this.enemyList)
+        {
+            if (character.pos.row == position.row && character.pos.col == position.col)
+            {
+                temp = character;
+                break; // Dodanie break po znalezieniu pasującego Character
+            }
+        }
+        return temp;
     }
 }
 
@@ -135,6 +148,7 @@ public static class Sprites
             case MapTileEnum.air: return ' ';
             case MapTileEnum.grass: return ',';
             case MapTileEnum.player: return '@';
+            case MapTileEnum.enemy: return 'E';
             default: return ' ';
         }
     }
