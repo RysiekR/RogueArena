@@ -96,7 +96,16 @@ public class Character
             movementAction();
             }*/
         }
-
     }
+   /* public void MakeAMove()
+    {
+        Position previousPosition = new Position(pos);
+        movementKey = Console.ReadKey(true).Key;
+        if (movementDictionary.ContainsKey(movementKey))
+        {
+            Action movementAction = movementDictionary[movementKey];
+            movementAction();
+        }
+    }*/
 }
 
