@@ -7,6 +7,8 @@ public class Character
     public Level level;
     public List<ItemType> allItems = new List<ItemType>();
     public string name;
+    private Dictionary<ConsoleKey, Action> movementDictionary;
+    private ConsoleKey movementKey;
     public Character(Position pos)
     {
         GetRandomEQ(3);
@@ -15,6 +17,13 @@ public class Character
         this.pos = pos;
         level = new Level(this);
         stats = new Stats(10, 10, this);
+        movementDictionary = new()
+    {
+        {ConsoleKey.W, () => this.pos.row-- },
+        {ConsoleKey.S, () => this.pos.row++ },
+        {ConsoleKey.A, () => this.pos.col-- },
+        {ConsoleKey.D, () => this.pos.col++ },
+    };
     }
     public void DebugShowStats()
     {
@@ -70,6 +79,22 @@ public class Character
         for (int i = 0; i < numOfArmor; i++)
         {
             allItems.Add(new ArmorItem());
+        }
+
+    }
+    public void MakeAMove()
+    {
+        Position previousPosition = new Position(pos);
+        //get new position
+        movementKey = Console.ReadKey(true).Key;
+        //movementDictionary.ContainsKey(movementKey)
+        if (movementDictionary.TryGetValue(movementKey, out Action movementAction))
+        {
+            movementAction?.Invoke();
+            /*if (movementAction != null)
+            {
+            movementAction();
+            }*/
         }
 
     }

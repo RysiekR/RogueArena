@@ -2,37 +2,45 @@
 {
     private int mapaHeight;
     private int mapaWidth;
-    public Mapa[,] mapa;
+    public MapTileEnum[,] mapOfEnums;
     public List<Character> enemyList;
-    public Map(string[] mapaStringowa)
+    public Map(string[] miniMapFromSprites)
     {
-        GenerateArrayFromString(mapaStringowa);
-        GenerateEnemies(0);
-        /*mapa = new Mapa[3, 3]
+        if (mapOfEnums == null)
         {
-            {Mapa.wall, Mapa.wall,Mapa.wall },
-            {Mapa.wall, Mapa.air, Mapa.air },
-            {Mapa.wall, Mapa.wall,Mapa.wall }
+            GenerateArrayFromStringArray(miniMapFromSprites);
+        }
+        else 
+        {
+            Console.WriteLine("mapofenums not null");
+        }
+        GenerateEnemies(1);
+        /*mapOfEnums = new MapTileEnum[3, 3]
+        {
+            {MapTileEnum.wall, MapTileEnum.wall,MapTileEnum.wall },
+            {MapTileEnum.wall, MapTileEnum.air, MapTileEnum.air },
+            {MapTileEnum.wall, MapTileEnum.wall,MapTileEnum.wall }
         };*/
     }
-    private void GenerateArrayFromString(string[] mapaStringowa)
+    private void GenerateArrayFromStringArray(string[] stringArrayMiniMap)
     {
-        mapaHeight = mapaStringowa.Length * Sprites.spriteSize;
-        mapaWidth = mapaStringowa[0].Length * Sprites.spriteSize;
-        mapa = new Mapa[mapaWidth, mapaHeight];
+        mapaHeight = stringArrayMiniMap.Length * Sprites.spriteSize;
+        mapaWidth = stringArrayMiniMap[0].Length * Sprites.spriteSize;
 
-        for (int i = 0; i < mapaStringowa.Length; i++)
+        mapOfEnums = new MapTileEnum[mapaWidth, mapaHeight];
+
+        for (int i = 0; i < stringArrayMiniMap.Length; i++)
         {
-            for (int j = 0; j < mapaStringowa[i].Length; j++)
+            for (int j = 0; j < stringArrayMiniMap[i].Length; j++)
             {
-                char fromMiniMap = mapaStringowa[i][j];
+                char fromMiniMap = stringArrayMiniMap[i][j];
                 string[] toAddToMap = Sprites.GetBigSprite(fromMiniMap);
                 for (int k = 0; k < Sprites.spriteSize; k++)
                 {
                     for (int l = 0; l < Sprites.spriteSize; l++)
                         if (j * Sprites.spriteSize + l < mapaWidth && i * Sprites.spriteSize + k < mapaHeight)
                         {
-                            mapa[ j * Sprites.spriteSize + l, i * Sprites.spriteSize + k] = Sprites.GetMapaEnum(toAddToMap[l][k]);
+                            mapOfEnums[j * Sprites.spriteSize + l, i * Sprites.spriteSize + k] = Sprites.GetMapaEnum(toAddToMap[l][k]);
                         }
                 }
             }
@@ -43,7 +51,7 @@
         enemyList = new List<Character>();
         for (int i = 0; i < howMany; i++)
         {
-            enemyList.Add(new Character(new(i + 1, i + 1)));
+            enemyList.Add(new Character(new(i + Sprites.spriteSize, i + Sprites.spriteSize)));
         }
 
     }
@@ -57,10 +65,10 @@
         {
             for (int j = 0; j < mapaWidth; j++)
             {
-                Console.SetCursorPosition(j,i);
+                Console.SetCursorPosition(j, i);
                 Console.Write(' ');
                 Console.SetCursorPosition(j, i);
-                Console.Write(Sprites.GetCharFromEnum(mapa[j,i]));
+                Console.Write(Sprites.GetCharFromEnum(mapOfEnums[j, i]));
             }
         }
     }
@@ -73,7 +81,7 @@
                 Console.SetCursorPosition(j, i);
                 Console.Write(' ');
                 Console.SetCursorPosition(j, i);
-                Console.Write(Sprites.GetCharFromEnum(mapa[i,j]));
+                Console.Write(Sprites.GetCharFromEnum(mapOfEnums[i, j]));
             }
         }
     }
@@ -107,25 +115,25 @@ public static class Sprites
         " , ",
         ", ,"
     };
-    public static Mapa GetMapaEnum(char charToConvert)
+    public static MapTileEnum GetMapaEnum(char charToConvert)
     {
         switch (charToConvert)
         {
-            case '#': return Mapa.wall;
-            case '/': return Mapa.wallWindow;
-            case ',': return Mapa.grass;
-            case ' ': return Mapa.air;
-            default: return Mapa.air;
+            case '#': return MapTileEnum.wall;
+            case '/': return MapTileEnum.wallWindow;
+            case ',': return MapTileEnum.grass;
+            case ' ': return MapTileEnum.air;
+            default: return MapTileEnum.air;
         }
     }
-    public static char GetCharFromEnum(Mapa enumToGetChar)
+    public static char GetCharFromEnum(MapTileEnum enumToGetChar)
     {
         switch (enumToGetChar)
         {
-            case Mapa.wall: return '#';
-            case Mapa.wallWindow: return '/';
-            case Mapa.air: return ' ';
-            case Mapa.grass: return ',';
+            case MapTileEnum.wall: return '#';
+            case MapTileEnum.wallWindow: return '/';
+            case MapTileEnum.air: return ' ';
+            case MapTileEnum.grass: return ',';
             default: return ' ';
         }
     }
@@ -140,7 +148,7 @@ public static class Sprites
     }
 }
 
-public enum Mapa
+public enum MapTileEnum
 {
     wall,
     wallWindow,

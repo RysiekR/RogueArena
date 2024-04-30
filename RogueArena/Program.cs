@@ -1,8 +1,8 @@
 ﻿Console.ReadKey();
+    Map map = new Map(Sprites.miniMapEmpty);
 
 while (true) 
 {
-    Map map = new Map(Sprites.miniMapEmpty);
     map.PrintMap();
 
     Console.ReadKey();
