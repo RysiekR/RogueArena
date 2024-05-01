@@ -1,4 +1,9 @@
-﻿public class Map
+﻿public static class MapHolder
+{
+    public static Map mapVert = new Map(Sprites.miniMapEmptyVert);
+    public static Map mapHorr = new Map(Sprites.miniMapEmptyHorr);
+}
+public class Map
 {
     private int mapaHeight;
     private int mapaWidth;
@@ -10,7 +15,7 @@
         {
             GenerateArrayFromStringArray(miniMapFromSprites);
         }
-        else 
+        else
         {
             Console.WriteLine("mapofenums not null");
         }
@@ -51,7 +56,7 @@
         enemyList = new List<Enemy>();
         for (int i = 0; i < howMany; i++)
         {
-            enemyList.Add(new Enemy(new(i + Sprites.spriteSize, i + Sprites.spriteSize),this));
+            enemyList.Add(new Enemy(new(i + Sprites.spriteSize, i + Sprites.spriteSize), this));
         }
 
     }
@@ -61,6 +66,7 @@
     }
     public void PrintMap()
     {
+        Console.Clear();
         for (int i = 0; i < mapaHeight; i++)
         {
             for (int j = 0; j < mapaWidth; j++)
@@ -103,11 +109,11 @@
 public static class Sprites
 {
     public const int spriteSize = 3;
-    public static readonly string[] miniMapEmpty =
+    public static readonly string[] miniMapEmptyVert =
     {
         "WWWWWWWWWW",
         "W        W",
-        "W        W",
+        "W H      W",
         "W        W",
         "W        W",
         "W        W",
@@ -115,6 +121,14 @@ public static class Sprites
         "W        W",
         "W        W",
         "WWWWWWWWWW"
+    };
+    public static readonly string[] miniMapEmptyHorr =
+    {
+        "WWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+        "W                          W",
+        "W V                        W",
+        "W                          W",
+        "WWWWWWWWWWWWWWWWWWWWWWWWWWWW",
     };
     public static readonly string[] wallSprite = new string[spriteSize]
     {
@@ -128,6 +142,18 @@ public static class Sprites
         " , ",
         ", ,"
     };
+    public static readonly string[] horrPortalSprite = new string[spriteSize]
+    {
+        ", ,",
+        " H ",
+        ", ,"
+    };
+    public static readonly string[] vertPortalSprite = new string[spriteSize]
+    {
+        ", ,",
+        " V ",
+        ", ,"
+    };
     public static MapTileEnum GetMapaEnum(char charToConvert)
     {
         switch (charToConvert)
@@ -136,6 +162,8 @@ public static class Sprites
             case '/': return MapTileEnum.wallWindow;
             case ',': return MapTileEnum.grass;
             case ' ': return MapTileEnum.air;
+            case 'H': return MapTileEnum.horrPortal;
+            case 'V':return MapTileEnum.vertPortal;
             default: return MapTileEnum.air;
         }
     }
@@ -149,6 +177,8 @@ public static class Sprites
             case MapTileEnum.grass: return ',';
             case MapTileEnum.player: return '@';
             case MapTileEnum.enemy: return 'E';
+            case MapTileEnum.horrPortal: return 'H';
+            case MapTileEnum.vertPortal: return 'V';
             default: return ' ';
         }
     }
@@ -158,6 +188,8 @@ public static class Sprites
         {
             case 'W': return wallSprite;
             case ' ': return airSprite;
+            case 'H': return horrPortalSprite;
+            case 'V': return vertPortalSprite;
             default: return airSprite;
         }
     }
@@ -170,5 +202,8 @@ public enum MapTileEnum
     air,
     grass,
     enemy,
-    player
+    player,
+    horrPortal,
+    vertPortal,
+
 }

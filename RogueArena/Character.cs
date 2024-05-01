@@ -1,9 +1,10 @@
 ﻿
 
-public class Character
+public abstract class Character
 {
     public Map currentMap;
     public Position pos;
+    protected Position previousPosition;
     public Stats stats;
     public Level level;
     public List<ItemType> allItems = new List<ItemType>();
@@ -106,7 +107,7 @@ public class Character
     public void MovementAfterInput()
     {
         //save last position
-        Position previousPosition = new Position(pos);
+        previousPosition = new Position(pos);
 
         if (movementDictionary.ContainsKey(movementKey))
         {
@@ -134,7 +135,7 @@ public class Character
 
         canMove = true;
     }
-    private void PutCharacterOnMap()
+    protected void PutCharacterOnMap()
     {
         if (this is Player)
         {
@@ -147,7 +148,7 @@ public class Character
         Console.SetCursorPosition(pos.col, pos.row);
         Console.Write(Sprites.GetCharFromEnum(currentMap.mapOfEnums[pos.col, pos.row]));
     }
-    private void PutAirInTile(Position position)
+    protected void PutAirInTile(Position position)
     {
         currentMap.mapOfEnums[position.col, position.row] = MapTileEnum.air;
         Console.SetCursorPosition(position.col, position.row);
@@ -174,7 +175,9 @@ public class Enemy : Character
         logicOnPosition = new()
         {
             {MapTileEnum.wall,()=> canMove = false},
-            {MapTileEnum.grass,()=> grassPoints++ }
+            {MapTileEnum.grass,()=> grassPoints++ },
+            {MapTileEnum.enemy,()=> FightyFight(pos)}
+
         };
     }
     public void MakeAMove()
@@ -208,7 +211,9 @@ public class Player : Character
         {
             {MapTileEnum.wall,()=> canMove = false},
             {MapTileEnum.grass,()=> grassPoints++ },
-            {MapTileEnum.enemy,()=> FightyFight(pos)}
+            {MapTileEnum.enemy,()=> FightyFight(pos)},
+            {MapTileEnum.horrPortal,()=> horrPortalLogic() },
+            {MapTileEnum.vertPortal,()=> vertPortalLogic() }
         };
     }
     public void MakeAMove()
@@ -217,5 +222,23 @@ public class Player : Character
         movementKey = Console.ReadKey(true).Key;
 
         MovementAfterInput();
+    }
+    private void horrPortalLogic()
+    {
+        canMove = false;
+        PutAirInTile(previousPosition);
+        currentMap = MapHolder.mapHorr;
+        currentMap.PrintMap();
+        pos = previousPosition;
+        PutCharacterOnMap();
+    }
+    private void vertPortalLogic()
+    {
+        canMove = false;
+        PutAirInTile(previousPosition);
+        currentMap = MapHolder.mapVert;
+        currentMap.PrintMap();
+        pos = previousPosition;
+        PutCharacterOnMap();
     }
 }

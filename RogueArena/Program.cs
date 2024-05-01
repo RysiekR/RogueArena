@@ -1,9 +1,9 @@
 ﻿Console.ReadKey();
-Map map = new Map(Sprites.miniMapEmpty);
-Player player = new(new(5,5),map);
-map.PrintMap();
+//Map map = new Map(Sprites.miniMapEmptyVert);
+Player player = new(new(5,5),MapHolder.mapVert);
+player.currentMap.PrintMap();
 player.InitializeCharacter();
-foreach (Enemy enemy in map.enemyList)
+foreach (Enemy enemy in player.currentMap.enemyList)
 {
     enemy.InitializeCharacter();
 }
@@ -11,7 +11,7 @@ while (true)
 {
     Console.CursorVisible = false;
     player.MakeAMove();
-    foreach (Enemy enemy in map.enemyList)
+    foreach (Enemy enemy in player.currentMap.enemyList)
     {
         enemy.MakeAMove();
     }
