@@ -74,9 +74,9 @@
         float damage = -value;
         float damageAfterArmor;
         damageAfterArmor = damage / (1.0f + (armorSum / 10.0f));
-/*        Console.WriteLine("damage b4 armor :");
+/*        Console.WriteLine("damage b4 armorValue :");
         Console.WriteLine(damage);
-        Console.WriteLine("damage after armor :");
+        Console.WriteLine("damage after armorValue :");
         Console.WriteLine(damageAfterArmor);
 */
         if (damageAfterArmor < 0)

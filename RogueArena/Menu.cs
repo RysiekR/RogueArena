@@ -32,9 +32,38 @@
         {
             Console.Clear();
             Console.WriteLine("This is Items Menu(Esc to get back)");
+            Console.WriteLine("Press N for new item");
+            foreach (ItemType item in player.allItems)
+            {
+                Console.WriteLine("item:");
+                if (item is WeaponItem weaponItem)
+                {
+                    Console.WriteLine($"Attack: {weaponItem.atackValue}");
+                }
+                if (item is ArmorItem armorItem)
+                {
+                    Console.WriteLine($"Armor: {armorItem.armorValue}");
+                }
+            }
             switch (GetInput())
             {
                 case ConsoleKey.Escape: thisMenuContinue = false; break;
+                case ConsoleKey.N:
+                    {
+                        Console.Clear();
+                        Console.WriteLine("1 for weapon, 2 for armor");
+                        ConsoleKey pressed = Console.ReadKey(true).Key;
+                        if (pressed == ConsoleKey.D1)
+                        {
+                            player.allItems.Add(new WeaponItem());
+                        }
+                        else if (pressed == ConsoleKey.D2) 
+                        {
+                            player.allItems.Add(new ArmorItem());
+                        }
+                        player.stats.UpdateStats();
+                    }
+                    break;
             }
         }
     }
@@ -53,4 +82,8 @@
         }
 
     }
+}
+public static class DrawItem
+{
+
 }

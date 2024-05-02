@@ -51,7 +51,7 @@ public abstract class Character
             if (item.typeOfItem == TypeOfItem.Armor)
             {
                 ArmorItem armorItem = (ArmorItem)item;
-                sum += armorItem.armor;
+                sum += armorItem.armorValue;
             }
         }
         return sum;

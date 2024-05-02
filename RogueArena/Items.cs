@@ -12,12 +12,12 @@ public enum TypeOfItem
 
 public class ArmorItem : ItemType
 {
-    public int armor { get; private set; }
+    public int armorValue { get; private set; }
     public TypeOfItem typeOfItem { get; private set; } = TypeOfItem.Armor;
     public ArmorItem()
     {
         Random random = new Random();
-        armor = random.Next(0, 26);
+        armorValue = random.Next(0, 26);
     }
 }
 
