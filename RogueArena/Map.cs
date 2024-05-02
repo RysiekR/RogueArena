@@ -8,6 +8,7 @@ public class Map
     private int mapaHeight;
     private int mapaWidth;
     public MapTileEnum[,] mapOfEnums;
+    private MapTileEnum[,] mapChunk;
     public List<Enemy> enemyList;
     public Map(string[] miniMapFromSprites)
     {
@@ -78,19 +79,27 @@ public class Map
             }
         }
     }
-    public void PrintMapTest()
+    private void GenerateMapChunk()
     {
-        for (int i = 0; i < 3; i++)
+        //wez pozycje gracza +- 10 w obu kierunkach i zapisz wartosci odpowiedajace z mapOfEnums do mapchunk
+        //jak bedzie wygenerowane trzeba wywolac print map ale na mapchunk a nie na mapofenums
+        //wszystko wssdzic w jedna metode i nie wywolywac tego w kilku miejscach
+    }
+
+    /*    public void PrintMapTest()
         {
-            for (int j = 0; j < 3; j++)
+            for (int i = 0; i < 3; i++)
             {
-                Console.SetCursorPosition(j, i);
-                Console.Write(' ');
-                Console.SetCursorPosition(j, i);
-                Console.Write(Sprites.GetCharFromEnum(mapOfEnums[i, j]));
+                for (int j = 0; j < 3; j++)
+                {
+                    Console.SetCursorPosition(j, i);
+                    Console.Write(' ');
+                    Console.SetCursorPosition(j, i);
+                    Console.Write(Sprites.GetCharFromEnum(mapOfEnums[i, j]));
+                }
             }
         }
-    }
+    */
     public Character GetCharacterInPosition(Position position)
     {
         Character temp = null; // Inicjalizacja zmiennej temp wartością null
