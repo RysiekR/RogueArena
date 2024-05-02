@@ -1,12 +1,12 @@
 ﻿public struct Stats
 {
     Character owner;
-    private int strenght;
+    public int strenght{get; private set;}
     private float hp;
     public float maxHp { get; private set; }//=str*2*lvl
     private bool isAlive = true;
 
-    private int defense;
+    public int defense { get; private set; }
     public float shield { get; private set; }
     public float maxShield { get; private set; }//=(def*1.5 + str*1.5) *1.2 * lvl
     private bool isShielded = true;
@@ -74,11 +74,11 @@
         float damage = -value;
         float damageAfterArmor;
         damageAfterArmor = damage / (1.0f + (armorSum / 10.0f));
-        Console.WriteLine("damage b4 armor :");
+/*        Console.WriteLine("damage b4 armor :");
         Console.WriteLine(damage);
         Console.WriteLine("damage after armor :");
         Console.WriteLine(damageAfterArmor);
-
+*/
         if (damageAfterArmor < 0)
         {
             damageAfterArmor = 0;

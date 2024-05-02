@@ -1,5 +1,4 @@
 ﻿
-
 public abstract class Character
 {
     public Map currentMap;
@@ -36,9 +35,11 @@ public abstract class Character
     public void DebugShowStats()
     {
         Console.WriteLine($"{stats.Hp} / {stats.maxHp} HP");
-        Console.WriteLine($"{stats.shield} / {stats.maxShield} shield");
-        Console.WriteLine($"{stats.armorSum} armor");
-        Console.WriteLine($"{stats.attackSum} attack");
+        Console.WriteLine($"{stats.shield} / {stats.maxShield} Shield");
+        Console.WriteLine($"Armor: {stats.armorSum}, ArmorItems: {ArmorFromArmorItems()}");
+        Console.WriteLine($"Attack: {stats.attackSum}, AttackItems: {AttackPowerFromItems()}");
+        Console.WriteLine($"Strength: {stats.strenght}, Defense: {stats.defense}");
+        Console.WriteLine($"Level: {level.Lvl}, Exp: {level.Exp} / {level.GetExpThreshold()}");
 
     }
 
@@ -175,6 +176,8 @@ public class Enemy : Character
         logicOnPosition = new()
         {
             {MapTileEnum.wall,()=> canMove = false},
+            {MapTileEnum.vertPortal,()=> canMove = false},
+            {MapTileEnum.horrPortal,()=> canMove = false},
             {MapTileEnum.grass,()=> grassPoints++ },
             {MapTileEnum.enemy,()=> FightyFight(pos)}
 
@@ -215,6 +218,8 @@ public class Player : Character
             {MapTileEnum.horrPortal,()=> horrPortalLogic() },
             {MapTileEnum.vertPortal,()=> vertPortalLogic() }
         };
+        movementDictionary.Add(ConsoleKey.M, () => Menu.GetMenu(this));
+
     }
     public void MakeAMove()
     {

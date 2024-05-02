@@ -18,9 +18,9 @@ public class Level
         set
         {
             if (value >= 0)
-                if ((exp + value) >= 5 * lvl)
+                if ((exp + value) >= GetExpThreshold())
                 {
-                    exp = (exp + value) - 5 * lvl;
+                    exp = (exp + value) - GetExpThreshold();
                     lvl++;
                     owner.stats.LevelUp();
                     owner.stats.UpdateStats();
@@ -32,6 +32,10 @@ public class Level
         }
     }
     public int Lvl { get => lvl; }
+    public int GetExpThreshold()
+    {
+        return 5 * lvl;
+    }
 
 }
 
