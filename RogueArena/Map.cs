@@ -8,7 +8,9 @@ public class Map
     private int mapaHeight;
     private int mapaWidth;
     public MapTileEnum[,] mapOfEnums;
-    private MapTileEnum[,] mapChunk;
+    private static int chunkWidth = 20;
+    private static int chunkHeight = 20;
+    public MapTileEnum[,] mapChunk = new MapTileEnum[chunkWidth, chunkHeight];
     public List<Enemy> enemyList;
     public Map(string[] miniMapFromSprites)
     {
@@ -79,8 +81,75 @@ public class Map
             }
         }
     }
-    private void GenerateMapChunk()
+    public void PrintMapChunk(Position position)
     {
+        GenerateMapChunk(position);
+        Console.Clear();
+        for (int i = 0; i < chunkHeight; i++)
+        {
+            for (int j = 0; j < chunkWidth; j++)
+            {
+                Console.SetCursorPosition(j, i);
+                Console.Write(' ');
+                Console.SetCursorPosition(j, i);
+                Console.Write(Sprites.GetCharFromEnum(mapChunk[j, i]));
+            }
+        }
+    }
+
+    private void GenerateMapChunk(Position position)
+    {
+        int leftColStart;
+        if (position.col > 10)
+        {
+            if (position.col < mapaWidth - 10)
+            {
+                leftColStart = position.col - 10;
+            }
+            else
+            {
+                leftColStart = mapaWidth - 20;
+            }
+        }
+        else
+        {
+            leftColStart = 0;
+        }
+        leftColStart++;
+
+        int topRowStart;
+        if (position.row > 10)
+        {
+            if (position.row < mapaWidth - 10)
+            {
+                topRowStart = position.row - 10;
+            }
+            else
+            {
+                topRowStart = mapaHeight - 20;
+            }
+        }
+        else
+        {
+            topRowStart = 0;
+        }
+        topRowStart++;
+
+        for (int i = 0; i < chunkWidth; i++)
+        {
+            for (int j = 0; j < chunkHeight; j++)
+            {
+                if (i != 0 && j != 0 && i != chunkWidth && j != chunkHeight)
+                {
+                    mapChunk[i, j] = mapOfEnums[leftColStart, topRowStart];
+                }
+                else
+                {
+                    mapChunk[i, j] = MapTileEnum.chunkBorder;
+                }
+            }
+        }
+
         //wez pozycje gracza +- 10 w obu kierunkach i zapisz wartosci odpowiedajace z mapOfEnums do mapchunk
         //jak bedzie wygenerowane trzeba wywolac print map ale na mapchunk a nie na mapofenums
         //wszystko wssdzic w jedna metode i nie wywolywac tego w kilku miejscach
@@ -172,7 +241,7 @@ public static class Sprites
             case ',': return MapTileEnum.grass;
             case ' ': return MapTileEnum.air;
             case 'H': return MapTileEnum.horrPortal;
-            case 'V':return MapTileEnum.vertPortal;
+            case 'V': return MapTileEnum.vertPortal;
             default: return MapTileEnum.air;
         }
     }
@@ -188,6 +257,7 @@ public static class Sprites
             case MapTileEnum.enemy: return 'E';
             case MapTileEnum.horrPortal: return 'H';
             case MapTileEnum.vertPortal: return 'V';
+            case MapTileEnum.chunkBorder: return '~';
             default: return ' ';
         }
     }
@@ -214,5 +284,5 @@ public enum MapTileEnum
     player,
     horrPortal,
     vertPortal,
-
+    chunkBorder
 }

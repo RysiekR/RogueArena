@@ -116,9 +116,11 @@ public abstract class Character
             movementAction();//change pos
         }
         //make logic on pos if canmove true then move else make other action and set pos to previous position
-        if (logicOnPosition.ContainsKey(currentMap.mapOfEnums[pos.col, pos.row]))
+        //if (logicOnPosition.ContainsKey(currentMap.mapOfEnums[pos.col, pos.row]))
+        if (logicOnPosition.ContainsKey(currentMap.mapChunk[pos.col, pos.row]))
         {
             Action movementLogic = logicOnPosition[currentMap.mapOfEnums[pos.col, pos.row]];
+            //Action movementLogic = logicOnPosition[currentMap.mapChunk[pos.col, pos.row]];
             movementLogic();
         }
 
@@ -141,19 +143,24 @@ public abstract class Character
         if (this is Player)
         {
             currentMap.mapOfEnums[pos.col, pos.row] = MapTileEnum.player;
+            //currentMap.mapChunk[pos.col, pos.row] = MapTileEnum.player;
         }
         else if (this is Enemy)
         {
             currentMap.mapOfEnums[pos.col, pos.row] = MapTileEnum.enemy;
+            //currentMap.mapChunk[pos.col, pos.row] = MapTileEnum.enemy;
         }
         Console.SetCursorPosition(pos.col, pos.row);
         Console.Write(Sprites.GetCharFromEnum(currentMap.mapOfEnums[pos.col, pos.row]));
+        //Console.Write(Sprites.GetCharFromEnum(currentMap.mapChunk[pos.col, pos.row]));
     }
     protected void PutAirInTile(Position position)
     {
         currentMap.mapOfEnums[position.col, position.row] = MapTileEnum.air;
+        //currentMap.mapChunk[position.col, position.row] = MapTileEnum.air;
         Console.SetCursorPosition(position.col, position.row);
         Console.Write(Sprites.GetCharFromEnum(currentMap.mapOfEnums[position.col, position.row]));
+        //Console.Write(Sprites.GetCharFromEnum(currentMap.mapChunk[position.col, position.row]));
     }
     public void InitializeCharacter()
     {
@@ -216,7 +223,8 @@ public class Player : Character
             {MapTileEnum.grass,()=> grassPoints++ },
             {MapTileEnum.enemy,()=> FightyFight(pos)},
             {MapTileEnum.horrPortal,()=> horrPortalLogic() },
-            {MapTileEnum.vertPortal,()=> vertPortalLogic() }
+            {MapTileEnum.vertPortal,()=> vertPortalLogic() },
+            {MapTileEnum.chunkBorder,()=> currentMap.PrintMapChunk(pos) }
         };
         movementDictionary.Add(ConsoleKey.M, () => Menu.GetMenu(this));
 
