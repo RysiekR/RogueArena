@@ -7,7 +7,22 @@
     private bool isAlive = true;
 
     public int defense { get; private set; }
-    public float shield { get; private set; }
+    public float shield
+    {
+        get => _shield;
+        set
+        {
+        if (value > 0)
+            {
+                _shield += value;
+                if (_shield > maxShield)
+                {
+                    _shield = maxShield;
+                }
+            }
+        }
+    }
+    private float _shield;
     public float maxShield { get; private set; }//=(def*1.5 + str*1.5) *1.2 * lvl
     private bool isShielded = true;
 
@@ -90,8 +105,8 @@
     {
         if (damage < 0) // damage jest na minusie => deal dmg
         {
-            shield += damage;
-            if (shield <= 0)
+            _shield += damage;
+            if (_shield <= 0)
             {
                 isShielded = false;
             }
@@ -104,7 +119,7 @@
         hp = (hp * maxHp) / tempMaxHp;
 
         maxShield = (defense * 1.5f + strenght * 1.5f) * 1.2f * owner.level.Lvl;
-        shield = maxShield;
+        _shield = maxShield;
         isShielded = true;
 
         armorFromDefense = (defense) * owner.level.Lvl * 0.5f;
@@ -116,7 +131,7 @@
     }
     public void LevelUp()
     {
-        Console.WriteLine("LevelUp");
+        //Console.WriteLine("LevelUp");
         strenght += 5;
         defense += 5;
     }

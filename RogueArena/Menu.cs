@@ -75,9 +75,14 @@
             Console.Clear();
             Console.WriteLine("This is Stats Menu(Esc to get back)");
             player.DebugShowStats();
+            if (player.stats.Hp < player.stats.maxHp && player.grassPoints>0)
+            {
+                Console.WriteLine("Press 1 to heal");
+            }
             switch (GetInput())
             {
                 case ConsoleKey.Escape: thisMenuContinue = false; break;
+                case ConsoleKey.D1: player.HealFromGrass(); break;
             }
         }
 

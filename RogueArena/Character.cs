@@ -9,7 +9,7 @@ public abstract class Character
     public List<ItemType> allItems = new List<ItemType>();
     public string name;
     protected bool canMove = true;
-    protected int grassPoints = 0;
+    public int grassPoints { get; protected set; } = 0;
     protected Dictionary<ConsoleKey, Action> movementDictionary;
     protected Dictionary<MapTileEnum, Action> logicOnPosition;
     protected ConsoleKey movementKey;
@@ -75,7 +75,19 @@ public abstract class Character
     {
         other.stats.Hp = -this.stats.attackSum;
     }
-
+    public void HealFromGrass()
+    {
+        if (grassPoints == 0)
+        {
+            Console.WriteLine("No grass to heal");
+        }
+        else
+        {
+            this.stats.shield = grassPoints;
+            this.stats.Hp = grassPoints;
+            grassPoints = 0;
+        }
+    }
     private void GetRandomEQ(int sumOfItems)
     {
         Random rand = new Random();
