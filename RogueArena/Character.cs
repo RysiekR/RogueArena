@@ -1,19 +1,22 @@
 ﻿
 public abstract class Character
 {
-    public Map currentMap;
+    public Chunk currentChunk;
+    public ChunkCoordinates currentChunkCoordinates;
+
     public Position pos;
     protected Position previousPosition;
     public Stats stats;
     public Level level;
     public List<ItemType> allItems = new List<ItemType>();
     public string name;
+    public char avatar;
     protected bool canMove = true;
     public int grassPoints { get; protected set; } = 0;
     protected Dictionary<ConsoleKey, Action> movementDictionary;
-    protected Dictionary<MapTileEnum, Action> logicOnPosition;
+    protected Dictionary<SmallTile, Action> logicOnPosition;
     protected ConsoleKey movementKey;
-    public Character(Position position, Map currentMap)
+    public Character(Position position, Chunk currentChunk)
     {
         GetRandomEQ(3);
         name = NameGenerator.GetName();
@@ -29,8 +32,8 @@ public abstract class Character
             {ConsoleKey.D, () => this.pos.col=1 },
         };
 
-        this.currentMap = currentMap;
-
+        this.currentChunk = currentChunk;
+        currentChunkCoordinates = currentChunk.ownCoordinates;
     }
     public void DebugShowStats()
     {
@@ -103,19 +106,7 @@ public abstract class Character
         }
 
     }
-    /*public void MakeAMove()
-    {
-        Position previousPosition = new Position(pos);
-        //get new position
-        movementKey = Console.ReadKey(true).Key;
-        //movementDictionary.ContainsKey(movementKey)
-        if (movementDictionary.TryGetValue(movementKey, out Action movementAction))
-        {
-            movementAction?.Invoke();
-        }
-    }*/
-
-    //public abstract void MakeAMove();
+    public abstract void MakeAMove();
 
     public void MovementAfterInput()
     {
@@ -128,44 +119,59 @@ public abstract class Character
             movementAction();//change pos
         }
         //make logic on pos if canmove true then move else make other action and set pos to previous position
-        if (logicOnPosition.ContainsKey(currentMap.mapOfEnums[pos.col, pos.row]))
+        if (logicOnPosition.ContainsKey(currentChunk.smallTilesMap[pos.col, pos.row]))
         {
-            Action movementLogic = logicOnPosition[currentMap.mapOfEnums[pos.col, pos.row]];
+            Action movementLogic = logicOnPosition[currentChunk.smallTilesMap[pos.col, pos.row]];
             movementLogic();
         }
 
+        //tu bedzie problem !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         if (canMove)
         {
             PutCharacterOnMap();
-            PutAirInTile(previousPosition);
+            PutPreviousTileOnScreen(previousPosition);
         }
         else
         {
             pos = previousPosition;
         }
 
-
-
         canMove = true;
     }
     protected void PutCharacterOnMap()
     {
-        if (this is Player)
+        /*if (this is Player)
         {
             currentMap.mapOfEnums[pos.col, pos.row] = MapTileEnum.player;
         }
         else if (this is Enemy)
         {
             currentMap.mapOfEnums[pos.col, pos.row] = MapTileEnum.enemy;
-        }
+        }*/
         Console.SetCursorPosition(pos.col, pos.row);
-        Console.Write(Sprites.GetCharFromEnum(currentMap.mapOfEnums[pos.col, pos.row]));
+        Console.Write(this.avatar);
+/*
+        if (this is Player)
+        {
+            Console.Write('@');
+        }
+        else if ( this is Enemy)
+        {
+            Console.Write(this.avatar);
+
+        }*/
+        //Console.Write(Sprites.GetCharFromEnum(currentMap.mapOfEnums[pos.col, pos.row]));
     }
-    protected void PutAirInTile(Position position)
+    protected void PutPreviousTileOnScreen(Position position)
     {
-        currentMap.mapOfEnums[position.col, position.row] = MapTileEnum.air;
+        /*        currentMap.mapOfEnums[position.col, position.row] = MapTileEnum.air;
+                Console.SetCursorPosition(position.col, position.row);
+                Console.Write(Sprites.GetCharFromEnum(currentMap.mapOfEnums[position.col, position.row]));
+        */
+        // wywalic cala ta metode i zbudowac w przy slowniku metode ktora wypisuje i moze tez zmienia kolor
         Console.SetCursorPosition(position.col, position.row);
-        Console.Write(Sprites.GetCharFromEnum(currentMap.mapOfEnums[position.col, position.row]));
+        Console.Write(BigTileSprite.fromSmallTileToChar[currentChunk.smallTilesMap[position.col, position.row]]);
+
     }
     public void InitializeCharacter()
     {
@@ -174,28 +180,29 @@ public abstract class Character
 
     protected void FightyFight(Position position)
     {
-        Fight.Battle(this, currentMap.GetCharacterInPosition(position));
+        Fight.Battle(this, currentChunk.GetCharacterInPosition(position));
     }
 }
 
 public class Enemy : Character
 {
+    public char avatar = '$';
     private Random random = new Random();
-    public Enemy(Position position, Map currentMap) : base(position, currentMap)
+    public Enemy(Position position, Chunk currentChunk) : base(position, currentChunk)
     {
-        this.currentMap = currentMap;
+        this.currentChunk = currentChunk;
         pos = position;
         logicOnPosition = new()
         {
-            {MapTileEnum.wall,()=> canMove = false},
-            {MapTileEnum.vertPortal,()=> canMove = false},
-            {MapTileEnum.horrPortal,()=> canMove = false},
-            {MapTileEnum.grass,()=> grassPoints++ },
-            {MapTileEnum.enemy,()=> FightyFight(pos)}
+            //{SmallTile.wall,()=> canMove = false},
+            //{MapTileEnum.vertPortal,()=> canMove = false},
+            //{MapTileEnum.horrPortal,()=> canMove = false},
+            {SmallTile.grass,()=> grassPoints++ },
+            {SmallTile.enemy,()=> FightyFight(pos)}
 
         };
     }
-    public void MakeAMove()
+    public override void MakeAMove()
     {
         //get input and 
         movementKey = GetRandomInput();
@@ -217,33 +224,35 @@ public class Enemy : Character
 
 public class Player : Character
 {
-    public Player(Position position, Map currentMap) : base(position, currentMap)
+    public char avatar = '@';
+    public Player(Position position, Chunk currentChunk) : base(position, currentChunk)
     {
-        this.currentMap = currentMap;
+        this.currentChunk = currentChunk;
         pos = position;
         name = "Player";
         logicOnPosition = new()
         {
-            {MapTileEnum.wall,()=> canMove = false},
-            {MapTileEnum.grass,()=> grassPoints++ },
-            {MapTileEnum.enemy,()=> FightyFight(pos)},
-            {MapTileEnum.horrPortal,()=> horrPortalLogic() },
-            {MapTileEnum.vertPortal,()=> vertPortalLogic() }
+            //{SmallTile.wall,()=> canMove = false},
+            {SmallTile.grass,()=> grassPoints++ },
+            {SmallTile.enemy,()=> FightyFight(pos)},
+            //{MapTileEnum.horrPortal,()=> horrPortalLogic() },
+            //{MapTileEnum.vertPortal,()=> vertPortalLogic() }
         };
         movementDictionary.Add(ConsoleKey.M, () => Menu.GetMenu(this));
 
     }
-    public void MakeAMove()
+    public override void MakeAMove()
     {
         //get input and 
         movementKey = Console.ReadKey(true).Key;
 
         MovementAfterInput();
     }
+/*
     private void horrPortalLogic()
     {
         canMove = false;
-        PutAirInTile(previousPosition);
+        PutPreviousTileOnScreen(previousPosition);
         currentMap = MapHolder.mapHorr;
         currentMap.PrintMap();
         pos = previousPosition;
@@ -252,10 +261,11 @@ public class Player : Character
     private void vertPortalLogic()
     {
         canMove = false;
-        PutAirInTile(previousPosition);
+        PutPreviousTileOnScreen(previousPosition);
         currentMap = MapHolder.mapVert;
         currentMap.PrintMap();
         pos = previousPosition;
         PutCharacterOnMap();
     }
+*/
 }

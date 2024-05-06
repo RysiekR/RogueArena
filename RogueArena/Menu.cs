@@ -18,7 +18,8 @@
                 case ConsoleKey.D2: OpenStatsMenu(player); break;
             }
         }
-        player.currentMap.PrintMap();
+
+        //player.currentMap.PrintMap();
 
     }
     private static ConsoleKey GetInput()

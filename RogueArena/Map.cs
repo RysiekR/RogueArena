@@ -224,17 +224,24 @@ public enum BigTile //5x5 sprite name
 }
 public static class ChunkHolder
 {
-    public static Dictionary<ChunkCoordinates, Chunk> chunkData = new();
+    public static ChunkCoordinates firstChunkCoordinates = new ChunkCoordinates(0, 0);
+    public static Dictionary<ChunkCoordinates, Chunk> chunkData = new()
+    /*{
+        { firstChunkCoordinates, new Chunk(firstChunkCoordinates) }
+    }*/;
 }
 public class Chunk
 {
+    public ChunkCoordinates ownCoordinates{get; private set;}
     private const int bigTileWidth = 16;//x axis size
     private const int bigTileHeight = 10;//y axis size
     public BigTileSprite[,] bigTileMap = new BigTileSprite[bigTileWidth, bigTileHeight];
     public SmallTile[,] smallTilesMap = new SmallTile[BigTileSprite.smallTileWidth * bigTileWidth, BigTileSprite.smallTileHeight * bigTileHeight];
+    public List<Enemy> enemiesList = new List<Enemy>();
     public Chunk(ChunkCoordinates chunkCoordinates)
     {
         CreateBigAndSmallMap();
+        ownCoordinates = chunkCoordinates;
         ChunkHolder.chunkData.Add(chunkCoordinates, this);
     }
     private void CreateBigAndSmallMap()
@@ -258,15 +265,45 @@ public class Chunk
             }
         }
     }
+    public void PrintMap()
+    {
+        for(int i = 0;i < bigTileHeight*BigTileSprite.smallTileHeight;i++)
+        {
+            for(int j = 0; j< bigTileWidth*BigTileSprite.smallTileWidth;j++)
+            {
+                //i to y j to x
+                Console.SetCursorPosition(i, j);
+                Console.Write(BigTileSprite.fromSmallTileToChar[smallTilesMap[j,i]]);
+            }
+        }
+    }
+    public Character GetCharacterInPosition(Position position)
+    {
+        Character temp = null; // Inicjalizacja zmiennej temp wartością null
+        foreach (Character character in this.enemiesList)
+        {
+            if (character.pos.row == position.row && character.pos.col == position.col)
+            {
+                temp = character;
+                break; // break po znalezieniu pasującego Character
+            }
+        }
+        return temp;
+    }
 }
-public class ChunkCoordinates
+public struct ChunkCoordinates
 {
     public int x { get; private set; }
     public int y { get; private set; }
-    ChunkCoordinates(int x, int y)
+    public ChunkCoordinates(int x, int y)
     {
         this.x = x;
         this.y = y;
+    }
+    public ChunkCoordinates(ChunkCoordinates other)
+    {
+        this.x = other.x;
+        this.y = other.y;
     }
 }
 
@@ -312,6 +349,7 @@ public class BigTileSprite
         }
     }
 
+    //zamiast wywolywac w srodku console write(tutaj) to zrobic metode i wywolywac ja tam gdzie trzeba np Character w PutPreviousTileOnScreen
     public static Dictionary<SmallTile, char> fromSmallTileToChar = new Dictionary<SmallTile, char>()
     {
         { SmallTile.grass, ',' },
