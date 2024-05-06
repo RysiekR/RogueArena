@@ -23,14 +23,7 @@ public class Map
             Console.WriteLine("mapofenums not null");
         }
         GenerateEnemies(1);
-        */
-/*mapOfEnums = new MapTileEnum[3, 3]
-        {
-            {MapTileEnum.wall, MapTileEnum.wall,MapTileEnum.wall },
-            {MapTileEnum.wall, MapTileEnum.air, MapTileEnum.air },
-            {MapTileEnum.wall, MapTileEnum.wall,MapTileEnum.wall }
-        };*/
-/*
+        
     }
     private void GenerateArrayFromStringArray(string[] stringArrayMiniMap)
     {
@@ -90,22 +83,6 @@ public class Map
         //wszystko wssdzic w jedna metode i nie wywolywac tego w kilku miejscach
     }
 
-    */
-/*    public void PrintMapTest()
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    Console.SetCursorPosition(j, i);
-                    Console.Write(' ');
-                    Console.SetCursorPosition(j, i);
-                    Console.Write(Sprites.GetCharFromEnum(mapOfEnums[i, j]));
-                }
-            }
-        }
-    */
-/*
     public Character GetCharacterInPosition(Position position)
     {
         Character temp = null; // Inicjalizacja zmiennej temp wartością null
@@ -268,7 +245,7 @@ public class Chunk
             {
                 //i to y, j to x
                 //random sprite dodaj do tablicy spritow
-                bigTileMap[j, i] = (new BigTileSprite(BigTile.Air));
+                bigTileMap[j, i] = (new BigTileSprite(BigTile.Air)); // dodac randomness
                 // a teraz z kazdej duzej komorki pododawac do malej
                 for (int k = 0; k < BigTileSprite.smallTileHeight; k++)
                 {
