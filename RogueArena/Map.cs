@@ -253,30 +253,33 @@ public class Chunk
 {
     private const int bigTileWidth = 16;//x axis size
     private const int bigTileHeight = 10;//y axis size
-    //public BigTile[,] bigTilesMap = new BigTile[bigTileWidth,bigTileHeight];
     public BigTileSprite[,] bigTileMap = new BigTileSprite[bigTileWidth, bigTileHeight];
     public SmallTile[,] smallTilesMap = new SmallTile[BigTileSprite.smallTileWidth * bigTileWidth, BigTileSprite.smallTileHeight * bigTileHeight];
     public Chunk(ChunkCoordinates chunkCoordinates)
     {
-        CreateSpriteMap();
-        CreateSmallTilesMap();
+        CreateBigAndSmallMap();
         ChunkHolder.chunkData.Add(chunkCoordinates, this);
     }
-    private void CreateSpriteMap()
+    private void CreateBigAndSmallMap()
     {
         for (int i = 0; i < bigTileHeight; i++)
         {
             for (int j = 0; j < bigTileWidth; j++)
             {
-                //i to x, j to y
+                //i to y, j to x
                 //random sprite dodaj do tablicy spritow
-                bigTileMap[i, j] = (new BigTileSprite(BigTile.Air));
+                bigTileMap[j, i] = (new BigTileSprite(BigTile.Air));
+                // a teraz z kazdej duzej komorki pododawac do malej
+                for (int k = 0; k < BigTileSprite.smallTileHeight; k++)
+                {
+                    for(int l = 0; l<BigTileSprite.smallTileWidth; l++)
+                    {
+                        //k to y, l to x
+                        smallTilesMap[j * BigTileSprite.smallTileWidth + l, i * BigTileSprite.smallTileHeight + k] = bigTileMap[j, i].smallTiles[l, k];
+                    }
+                }
             }
         }
-    }
-    private void CreateSmallTilesMap()
-    {
-
     }
 }
 public class ChunkCoordinates
@@ -305,11 +308,9 @@ public class BigTileSprite
         {
             for (int j = 0; j < smallTileWidth; j++)
             {
-                //i to x col, j to y row
-                //dodaj wez sprita statica i wsadz tutaj
-
+                //j to x/col, i to y/row
                 //uzyj slownika zeby zamienic chara na enuma i zapisz go w smallTiles
-                char tempChar = GetSpriteString(bigTile)[i][j]; // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! [j][i] / [i][j]
+                char tempChar = GetSpriteString(bigTile)[i][j]; // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! [j][i] / [i][j] ???????????????????????????
                 smallTiles[i, j] = fromCharToSmallTile[tempChar];
             }
         }
@@ -333,13 +334,7 @@ public class BigTileSprite
             default: return emptySprite;
         }
     }
-    /*player, // player avatar
-    enemy, // enemy avatar
-    empty, // ' '
-    grass, // ','
-    trunk, // 'T'
-    leaf, // '*'
-    path, // '.'*/
+
     public static Dictionary<SmallTile, char> fromSmallTileToChar = new Dictionary<SmallTile, char>()
     {
         { SmallTile.grass, ',' },
