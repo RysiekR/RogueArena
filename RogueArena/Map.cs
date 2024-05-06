@@ -1,4 +1,6 @@
-﻿public static class MapHolder
+﻿/*namespace Temp
+{
+public static class MapHolder
 {
     public static Map mapVert = new Map(Sprites.miniMapEmptyVert);
     public static Map mapHorr = new Map(Sprites.miniMapEmptyHorr);
@@ -21,12 +23,14 @@ public class Map
             Console.WriteLine("mapofenums not null");
         }
         GenerateEnemies(1);
-        /*mapOfEnums = new MapTileEnum[3, 3]
+        */
+/*mapOfEnums = new MapTileEnum[3, 3]
         {
             {MapTileEnum.wall, MapTileEnum.wall,MapTileEnum.wall },
             {MapTileEnum.wall, MapTileEnum.air, MapTileEnum.air },
             {MapTileEnum.wall, MapTileEnum.wall,MapTileEnum.wall }
         };*/
+/*
     }
     private void GenerateArrayFromStringArray(string[] stringArrayMiniMap)
     {
@@ -86,7 +90,8 @@ public class Map
         //wszystko wssdzic w jedna metode i nie wywolywac tego w kilku miejscach
     }
 
-    /*    public void PrintMapTest()
+    */
+/*    public void PrintMapTest()
         {
             for (int i = 0; i < 3; i++)
             {
@@ -100,6 +105,7 @@ public class Map
             }
         }
     */
+/*
     public Character GetCharacterInPosition(Position position)
     {
         Character temp = null; // Inicjalizacja zmiennej temp wartością null
@@ -214,5 +220,174 @@ public enum MapTileEnum
     player,
     horrPortal,
     vertPortal,
+
+}
+
+}
+*/
+
+public enum SmallTile // single cell represantation
+{
+    player, // player avatar
+    enemy, // enemy avatar
+    empty, // ' '
+    grass, // ','
+    trunk, // 'T'
+    leaf, // '*'
+    path, // '.'
+}
+
+public enum BigTile //5x5 sprite name 
+{
+    Empty,
+    Air,
+    Tree,
+    Path,
+
+}
+public static class ChunkHolder
+{
+    public static Dictionary<ChunkCoordinates, Chunk> chunkData = new();
+}
+public class Chunk
+{
+    private const int bigTileWidth = 16;//x axis size
+    private const int bigTileHeight = 10;//y axis size
+    //public BigTile[,] bigTilesMap = new BigTile[bigTileWidth,bigTileHeight];
+    public BigTileSprite[,] bigTileMap = new BigTileSprite[bigTileWidth, bigTileHeight];
+    public SmallTile[,] smallTilesMap = new SmallTile[BigTileSprite.smallTileWidth * bigTileWidth, BigTileSprite.smallTileHeight * bigTileHeight];
+    public Chunk(ChunkCoordinates chunkCoordinates)
+    {
+        CreateSpriteMap();
+        CreateSmallTilesMap();
+        ChunkHolder.chunkData.Add(chunkCoordinates, this);
+    }
+    private void CreateSpriteMap()
+    {
+        for (int i = 0; i < bigTileHeight; i++)
+        {
+            for (int j = 0; j < bigTileWidth; j++)
+            {
+                //i to x, j to y
+                //random sprite dodaj do tablicy spritow
+                bigTileMap[i, j] = (new BigTileSprite(BigTile.Air));
+            }
+        }
+    }
+    private void CreateSmallTilesMap()
+    {
+
+    }
+}
+public class ChunkCoordinates
+{
+    public int x { get; private set; }
+    public int y { get; private set; }
+    ChunkCoordinates(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+}
+
+public class BigTileSprite
+{
+    public SmallTile[,] smallTiles = new SmallTile[smallTileWidth, smallTileHeight];
+    public BigTile spriteName;
+    public BigTileSprite(BigTile bigTile)
+    {
+        this.spriteName = bigTile;
+        GenerateSpriteSmallTiles(bigTile);
+    }
+    private void GenerateSpriteSmallTiles(BigTile bigTile)
+    {
+        for (int i = 0; i < smallTileHeight; i++)
+        {
+            for (int j = 0; j < smallTileWidth; j++)
+            {
+                //i to x col, j to y row
+                //dodaj wez sprita statica i wsadz tutaj
+
+                //uzyj slownika zeby zamienic chara na enuma i zapisz go w smallTiles
+                char tempChar = GetSpriteString(bigTile)[i][j]; // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! [j][i] / [i][j]
+                smallTiles[i, j] = fromCharToSmallTile[tempChar];
+            }
+        }
+    }
+    public SmallTile GetSmallTileAt(Position position)
+    {
+        return smallTiles[position.row, position.col];
+    }
+
+    //BigTileSprite statics
+    public const int smallTileWidth = 5;//sprite size
+    public const int smallTileHeight = 5;
+
+    private static string[] GetSpriteString(BigTile bigTile)
+    {
+        switch (bigTile)
+        {
+            case BigTile.Air: return airSprite;
+            case BigTile.Tree: return treeSprite;
+            case BigTile.Path: return pathSprite;
+            default: return emptySprite;
+        }
+    }
+    /*player, // player avatar
+    enemy, // enemy avatar
+    empty, // ' '
+    grass, // ','
+    trunk, // 'T'
+    leaf, // '*'
+    path, // '.'*/
+    public static Dictionary<SmallTile, char> fromSmallTileToChar = new Dictionary<SmallTile, char>()
+    {
+        { SmallTile.grass, ',' },
+        { SmallTile.empty, ' ' },
+        { SmallTile.trunk, 'T' },
+        { SmallTile.leaf, '*' },
+        { SmallTile.path, '.' }
+    };
+    public static Dictionary<char, SmallTile> fromCharToSmallTile = new Dictionary<char, SmallTile>()
+    {
+        { ',', SmallTile.grass },
+        { ' ', SmallTile.empty },
+        { 'T', SmallTile.trunk },
+        { '*', SmallTile.leaf },
+        { '.', SmallTile.path }
+    };
+
+    public static readonly string[] airSprite = new string[smallTileHeight]
+    {
+        ", , ,",
+        " , , ",
+        ", , ,",
+        " , , ",
+        ", , ,"
+    };
+    public static readonly string[] emptySprite = new string[smallTileHeight]
+    {
+        "     ",
+        "     ",
+        "     ",
+        "     ",
+        "     "
+    };
+    public static readonly string[] treeSprite = new string[smallTileHeight]
+    {
+        "     ",
+        " *** ",
+        " *T* ",
+        "  T  ",
+        "     "
+    };
+    public static readonly string[] pathSprite = new string[smallTileHeight]
+    {
+        ".....",
+        ".....",
+        ".....",
+        ".....",
+        "....."
+    };
 
 }
