@@ -286,6 +286,7 @@ public class Player : Character
             //{SmallTile.wall,()=> canMove = false},
             {SmallTile.grass,()=> GrassMethod() },
             {SmallTile.enemy,()=> FightyFight(pos)},
+            {SmallTile.trunk,()=> ChopTree(pos) }
         };
         movementDictionary.Add(ConsoleKey.M, () => Menu.GetMenu(this));
 
@@ -296,5 +297,9 @@ public class Player : Character
         movementKey = Console.ReadKey(true).Key;
 
         MovementAfterInput();
+    }
+    private void ChopTree(Position position)
+    {
+        
     }
 }
