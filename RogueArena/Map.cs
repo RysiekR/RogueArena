@@ -252,7 +252,7 @@ public class Chunk
             {
                 //i to y, j to x
                 //random sprite dodaj do tablicy spritow
-                bigTileMap[j, i] = (new BigTileSprite(BigTile.Air)); // dodac randomness
+                bigTileMap[j, i] = (BigTileSprite.GetNewRandomBigTileSprite());
                 // a teraz z kazdej duzej komorki pododawac do malej
                 for (int k = 0; k < BigTileSprite.smallTileHeight; k++)
                 {
@@ -338,6 +338,31 @@ public class BigTileSprite
     //BigTileSprite statics
     public const int smallTileWidth = 5;//sprite size
     public const int smallTileHeight = 5;
+    public static BigTileSprite GetNewRandomBigTileSprite()
+    {
+        return new BigTileSprite(GetRandomBigTile());
+    }
+    private static BigTile GetRandomBigTile()
+    {
+        Random random = new Random();
+        int temp = random.Next(1, 101);
+        if (temp > 95)
+        {
+            return BigTile.Tree;
+        }
+        else if (temp > 80)
+        {
+            return BigTile.Path;
+        }
+        else if (temp > 10)
+        {
+            return BigTile.Air;
+        }
+        else
+        {
+            return BigTile.Empty;
+        }
+    }
 
     private static string[] GetSpriteString(BigTile bigTile)
     {
@@ -390,7 +415,7 @@ public class BigTileSprite
         " *** ",
         " *T* ",
         "  T  ",
-        "     "
+        "     " 
     };
     public static readonly string[] pathSprite = new string[smallTileHeight]
     {
