@@ -357,7 +357,7 @@ public class BigTileSprite
         {
             return BigTile.Tree;
         }
-        else if (temp > 80)
+        else if (temp > 90)
         {
             return BigTile.Path;
         }

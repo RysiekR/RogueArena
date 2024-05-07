@@ -3,6 +3,7 @@ public abstract class Character
 {
     public Chunk currentChunk;
     public ChunkCoordinates currentChunkCoordinates;
+    public ChunkCoordinates nextChunkCoordinates;
 
     public Position pos;
     protected Position previousPosition;
@@ -150,12 +151,24 @@ public abstract class Character
     {
         //ChunkHolder.chunkData[currentChunkCoordinates];
         //currentChunk.smallTilesMap;
-        if (position.col == currentChunk.leftBorder || position.col == currentChunk.rightBorder)
+        if (position.col == currentChunk.leftBorder)
         {
+            nextChunkCoordinates = new ChunkCoordinates(currentChunkCoordinates.x - 1, currentChunkCoordinates.y);
             return true;
         }
-        if (position.row == currentChunk.topBorder || position.row == currentChunk.bottomBorder)
+        else if (position.col == currentChunk.rightBorder)
         {
+            nextChunkCoordinates = new ChunkCoordinates(currentChunkCoordinates.x + 1, currentChunkCoordinates.y);
+            return true;
+        }
+        if (position.row == currentChunk.topBorder )
+        {
+            nextChunkCoordinates = new ChunkCoordinates(currentChunkCoordinates.x, currentChunkCoordinates.y - 1);
+            return true;
+        }
+        else if(position.row == currentChunk.bottomBorder)
+        {
+            nextChunkCoordinates = new ChunkCoordinates(currentChunkCoordinates.x, currentChunkCoordinates.y + 1);
             return true;
         }
 
@@ -163,7 +176,26 @@ public abstract class Character
     }
     private void GenerateAndPlaceOnNewChunk(Position position)
     {
-        Console.Beep();
+
+        //if (ChunkHolder.chunkData.TryGetValue(nextChunkCoordinates, out Chunk nextChunk))
+        if (ChunkHolder.chunkData.ContainsKey(nextChunkCoordinates))
+        {
+            //change player.currentChunk na nextChunk
+            //change player.pos
+            currentChunk = ChunkHolder.chunkData[nextChunkCoordinates];
+            pos = new(10, 10);
+
+        }
+        else
+        {
+            Chunk nextChunk = new Chunk(nextChunkCoordinates);
+            currentChunk = nextChunk;
+        }
+        currentChunkCoordinates = nextChunkCoordinates;
+        pos = new(10, 10);
+        currentChunk.PrintMap();
+        InitializeCharacter();
+
     }
     protected void PutCharacterOnMap()
     {
@@ -209,6 +241,11 @@ public abstract class Character
     {
         Fight.Battle(this, currentChunk.GetCharacterInPosition(position));
     }
+    protected void GrassMethod()
+    {
+        grassPoints++;
+        currentChunk.smallTilesMap[pos.col,pos.row] = SmallTile.empty;
+    }
 }
 
 public class Enemy : Character
@@ -225,7 +262,8 @@ public class Enemy : Character
             //{SmallTile.wall,()=> canMove = false},
             //{MapTileEnum.vertPortal,()=> canMove = false},
             //{MapTileEnum.horrPortal,()=> canMove = false},
-            {SmallTile.grass,()=> grassPoints++ },
+            //{SmallTile.grass,()=> grassPoints++ },
+            {SmallTile.grass,()=> GrassMethod() },
             {SmallTile.enemy,()=> FightyFight(pos)}
 
         };
@@ -262,7 +300,8 @@ public class Player : Character
         logicOnPosition = new()
         {
             //{SmallTile.wall,()=> canMove = false},
-            {SmallTile.grass,()=> grassPoints++ },
+            //{SmallTile.grass,()=> grassPoints++ },
+            {SmallTile.grass,()=> GrassMethod() },
             {SmallTile.enemy,()=> FightyFight(pos)},
             //{MapTileEnum.horrPortal,()=> horrPortalLogic() },
             //{MapTileEnum.vertPortal,()=> vertPortalLogic() }
