@@ -71,7 +71,6 @@ public class Chunk
     public void PrintMap()
     {
         for (int i = 0; i < bigTileHeight * BigTileSprite.smallTileHeight; i++)
-        //for(int i = 0;i < 20;i++)
         {
             for (int j = 0; j < bigTileWidth * BigTileSprite.smallTileWidth; j++)
             {
@@ -80,6 +79,7 @@ public class Chunk
                 Console.Write(BigTileSprite.fromSmallTileToChar[smallTilesMap[j, i]]);
             }
         }
+        PrintChunkCoordinates();
     }
     public Character GetCharacterInPosition(Position position)
     {
@@ -93,6 +93,11 @@ public class Chunk
             }
         }
         return temp;
+    }
+    public void PrintChunkCoordinates()
+    {
+        Console.SetCursorPosition(bigTileWidth * BigTileSprite.smallTileWidth + 5,5);
+        Console.WriteLine($"Current Chunk Coordinates: {ownCoordinates.x}/{ownCoordinates.y}");
     }
 }
 public struct ChunkCoordinates
