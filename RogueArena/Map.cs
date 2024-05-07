@@ -232,14 +232,21 @@ public static class ChunkHolder
 }
 public class Chunk
 {
-    public ChunkCoordinates ownCoordinates{get; private set;}
-    private const int bigTileWidth = 24;//x axis size
-    private const int bigTileHeight = 10;//y axis size
+    public ChunkCoordinates ownCoordinates { get; private set; }
+    public const int bigTileWidth = 24;//x axis size
+    public const int bigTileHeight = 10;//y axis size
     public BigTileSprite[,] bigTileMap = new BigTileSprite[bigTileWidth, bigTileHeight];
     public SmallTile[,] smallTilesMap = new SmallTile[BigTileSprite.smallTileWidth * bigTileWidth, BigTileSprite.smallTileHeight * bigTileHeight];
     public List<Enemy> enemiesList = new List<Enemy>();
+    public int leftBorder { get; private set; } = 0;
+    public int topBorder { get; private set; } = 0;
+    public int rightBorder { get; private set; }
+    public int bottomBorder { get; private set; }
+
     public Chunk(ChunkCoordinates chunkCoordinates)
     {
+        rightBorder = bigTileWidth * BigTileSprite.smallTileWidth - 1;
+        bottomBorder = bigTileHeight * BigTileSprite.smallTileHeight - 1;
         CreateBigAndSmallMap();
         ownCoordinates = chunkCoordinates;
         ChunkHolder.chunkData.Add(chunkCoordinates, this);
@@ -256,10 +263,10 @@ public class Chunk
                 // a teraz z kazdej duzej komorki pododawac do malej
                 for (int k = 0; k < BigTileSprite.smallTileHeight; k++)
                 {
-                    for(int l = 0; l<BigTileSprite.smallTileWidth; l++)
+                    for (int l = 0; l < BigTileSprite.smallTileWidth; l++)
                     {
                         //k to y, l to x
-                        smallTilesMap[j * BigTileSprite.smallTileWidth + l, i * BigTileSprite.smallTileHeight + k] = bigTileMap[j, i].smallTiles[l, k];
+                        smallTilesMap[j * BigTileSprite.smallTileWidth + l, i * BigTileSprite.smallTileHeight + k] = bigTileMap[j, i].smallTiles[k, l];
                     }
                 }
             }
@@ -267,14 +274,14 @@ public class Chunk
     }
     public void PrintMap()
     {
-        for(int i = 0;i < bigTileHeight*BigTileSprite.smallTileHeight;i++)
+        for (int i = 0; i < bigTileHeight * BigTileSprite.smallTileHeight; i++)
         //for(int i = 0;i < 20;i++)
         {
-            for(int j = 0; j< bigTileWidth*BigTileSprite.smallTileWidth;j++)
+            for (int j = 0; j < bigTileWidth * BigTileSprite.smallTileWidth; j++)
             {
                 //i to y j to x
-                Console.SetCursorPosition(j,i);
-                Console.Write(BigTileSprite.fromSmallTileToChar[smallTilesMap[j,i]]);
+                Console.SetCursorPosition(j, i);
+                Console.Write(BigTileSprite.fromSmallTileToChar[smallTilesMap[j, i]]);
             }
         }
     }
@@ -415,7 +422,7 @@ public class BigTileSprite
         " *** ",
         " *T* ",
         "  T  ",
-        "     " 
+        "     "
     };
     public static readonly string[] pathSprite = new string[smallTileHeight]
     {

@@ -10,7 +10,7 @@ public abstract class Character
     public Level level;
     public List<ItemType> allItems = new List<ItemType>();
     public string name;
-    public char avatar {get; protected set;}
+    public char avatar { get; protected set; }
     protected bool canMove = true;
     public int grassPoints { get; protected set; } = 0;
     protected Dictionary<ConsoleKey, Action> movementDictionary;
@@ -118,6 +118,14 @@ public abstract class Character
             Action movementAction = movementDictionary[movementKey];
             movementAction();//change pos
         }
+
+        if (this is Player)
+        {
+            if (CheckIfChunkBorder(pos))
+            {
+                GenerateAndPlaceOnNewChunk(pos);
+            }
+        }
         //make logic on pos if canmove true then move else make other action and set pos to previous position
         if (logicOnPosition.ContainsKey(currentChunk.smallTilesMap[pos.col, pos.row]))
         {
@@ -138,6 +146,25 @@ public abstract class Character
 
         canMove = true;
     }
+    private bool CheckIfChunkBorder(Position position)
+    {
+        //ChunkHolder.chunkData[currentChunkCoordinates];
+        //currentChunk.smallTilesMap;
+        if (position.col == currentChunk.leftBorder || position.col == currentChunk.rightBorder)
+        {
+            return true;
+        }
+        if (position.row == currentChunk.topBorder || position.row == currentChunk.bottomBorder)
+        {
+            return true;
+        }
+
+        return false;
+    }
+    private void GenerateAndPlaceOnNewChunk(Position position)
+    {
+        Console.Beep();
+    }
     protected void PutCharacterOnMap()
     {
         /*if (this is Player)
@@ -150,16 +177,16 @@ public abstract class Character
         }*/
         Console.SetCursorPosition(pos.col, pos.row);
         Console.Write(this.avatar);
-/*
-        if (this is Player)
-        {
-            Console.Write('@');
-        }
-        else if ( this is Enemy)
-        {
-            Console.Write(this.avatar);
+        /*
+                if (this is Player)
+                {
+                    Console.Write('@');
+                }
+                else if ( this is Enemy)
+                {
+                    Console.Write(this.avatar);
 
-        }*/
+                }*/
         //Console.Write(Sprites.GetCharFromEnum(currentMap.mapOfEnums[pos.col, pos.row]));
     }
     protected void PutPreviousTileOnScreen(Position position)
@@ -186,7 +213,7 @@ public abstract class Character
 
 public class Enemy : Character
 {
-    
+
     private Random random = new Random();
     public Enemy(Position position, Chunk currentChunk) : base(position, currentChunk)
     {
@@ -225,7 +252,7 @@ public class Enemy : Character
 
 public class Player : Character
 {
-    
+
     public Player(Position position, Chunk currentChunk) : base(position, currentChunk)
     {
         avatar = '@';
@@ -250,24 +277,24 @@ public class Player : Character
 
         MovementAfterInput();
     }
-/*
-    private void horrPortalLogic()
-    {
-        canMove = false;
-        PutPreviousTileOnScreen(previousPosition);
-        currentMap = MapHolder.mapHorr;
-        currentMap.PrintMap();
-        pos = previousPosition;
-        PutCharacterOnMap();
-    }
-    private void vertPortalLogic()
-    {
-        canMove = false;
-        PutPreviousTileOnScreen(previousPosition);
-        currentMap = MapHolder.mapVert;
-        currentMap.PrintMap();
-        pos = previousPosition;
-        PutCharacterOnMap();
-    }
-*/
+    /*
+        private void horrPortalLogic()
+        {
+            canMove = false;
+            PutPreviousTileOnScreen(previousPosition);
+            currentMap = MapHolder.mapHorr;
+            currentMap.PrintMap();
+            pos = previousPosition;
+            PutCharacterOnMap();
+        }
+        private void vertPortalLogic()
+        {
+            canMove = false;
+            PutPreviousTileOnScreen(previousPosition);
+            currentMap = MapHolder.mapVert;
+            currentMap.PrintMap();
+            pos = previousPosition;
+            PutCharacterOnMap();
+        }
+    */
 }
