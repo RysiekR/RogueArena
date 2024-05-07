@@ -233,7 +233,7 @@ public static class ChunkHolder
 public class Chunk
 {
     public ChunkCoordinates ownCoordinates{get; private set;}
-    private const int bigTileWidth = 16;//x axis size
+    private const int bigTileWidth = 24;//x axis size
     private const int bigTileHeight = 10;//y axis size
     public BigTileSprite[,] bigTileMap = new BigTileSprite[bigTileWidth, bigTileHeight];
     public SmallTile[,] smallTilesMap = new SmallTile[BigTileSprite.smallTileWidth * bigTileWidth, BigTileSprite.smallTileHeight * bigTileHeight];
@@ -268,11 +268,12 @@ public class Chunk
     public void PrintMap()
     {
         for(int i = 0;i < bigTileHeight*BigTileSprite.smallTileHeight;i++)
+        //for(int i = 0;i < 20;i++)
         {
             for(int j = 0; j< bigTileWidth*BigTileSprite.smallTileWidth;j++)
             {
                 //i to y j to x
-                Console.SetCursorPosition(i, j);
+                Console.SetCursorPosition(j,i);
                 Console.Write(BigTileSprite.fromSmallTileToChar[smallTilesMap[j,i]]);
             }
         }

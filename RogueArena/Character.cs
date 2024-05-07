@@ -10,7 +10,7 @@ public abstract class Character
     public Level level;
     public List<ItemType> allItems = new List<ItemType>();
     public string name;
-    public char avatar;
+    public char avatar {get; protected set;}
     protected bool canMove = true;
     public int grassPoints { get; protected set; } = 0;
     protected Dictionary<ConsoleKey, Action> movementDictionary;
@@ -186,10 +186,11 @@ public abstract class Character
 
 public class Enemy : Character
 {
-    public char avatar = '$';
+    
     private Random random = new Random();
     public Enemy(Position position, Chunk currentChunk) : base(position, currentChunk)
     {
+        avatar = '$';
         this.currentChunk = currentChunk;
         pos = position;
         logicOnPosition = new()
@@ -224,9 +225,10 @@ public class Enemy : Character
 
 public class Player : Character
 {
-    public char avatar = '@';
+    
     public Player(Position position, Chunk currentChunk) : base(position, currentChunk)
     {
+        avatar = '@';
         this.currentChunk = currentChunk;
         pos = position;
         name = "Player";
