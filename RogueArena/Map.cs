@@ -97,7 +97,15 @@ public class Chunk
     public void PrintChunkCoordinates()
     {
         Console.SetCursorPosition(bigTileWidth * BigTileSprite.smallTileWidth + 5,5);
-        Console.WriteLine($"Current Chunk Coordinates: {ownCoordinates.x}/{ownCoordinates.y}");
+        Console.WriteLine($"Current Chunk Coordinates:");
+        for (int i = 0; i < 10;i++)
+        {
+            Console.SetCursorPosition(bigTileWidth * BigTileSprite.smallTileWidth + 5 + i, 6);
+            Console.Write(' ');
+        }
+        Console.SetCursorPosition(bigTileWidth * BigTileSprite.smallTileWidth + 5, 6);
+        Console.WriteLine($"{ownCoordinates.x}/{ownCoordinates.y}");
+
     }
 }
 public struct ChunkCoordinates
