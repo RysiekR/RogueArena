@@ -1,8 +1,6 @@
 ﻿Console.ReadKey();
-//Console.SetBufferSize(Console.LargestWindowWidth,Console.LargestWindowHeight);
 Console.CursorVisible = false;
 
-//Map map = new Map(Sprites.miniMapEmptyVert);
 Chunk firstChunk = new Chunk(ChunkHolder.firstChunkCoordinates);
 Player player = new(new Position(5, 5), ChunkHolder.chunkData[ChunkHolder.firstChunkCoordinates]);
 player.currentChunk.PrintMap();

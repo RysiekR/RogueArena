@@ -19,7 +19,7 @@
             }
         }
 
-        //player.currentMap.PrintMap();
+        player.currentChunk.PrintMap();
 
     }
     private static ConsoleKey GetInput()

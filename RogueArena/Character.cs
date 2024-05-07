@@ -149,8 +149,6 @@ public abstract class Character
     }
     private bool CheckIfChunkBorder(Position position)
     {
-        //ChunkHolder.chunkData[currentChunkCoordinates];
-        //currentChunk.smallTilesMap;
         if (position.col == currentChunk.leftBorder)
         {
             nextChunkCoordinates = new ChunkCoordinates(currentChunkCoordinates.x - 1, currentChunkCoordinates.y);
@@ -177,11 +175,8 @@ public abstract class Character
     private void GenerateAndPlaceOnNewChunk(Position position)
     {
 
-        //if (ChunkHolder.chunkData.TryGetValue(nextChunkCoordinates, out Chunk nextChunk))
         if (ChunkHolder.chunkData.ContainsKey(nextChunkCoordinates))
         {
-            //change player.currentChunk na nextChunk
-            //change player.pos
             currentChunk = ChunkHolder.chunkData[nextChunkCoordinates];
             pos = new(10, 10);
 
@@ -199,34 +194,11 @@ public abstract class Character
     }
     protected void PutCharacterOnMap()
     {
-        /*if (this is Player)
-        {
-            currentMap.mapOfEnums[pos.col, pos.row] = MapTileEnum.player;
-        }
-        else if (this is Enemy)
-        {
-            currentMap.mapOfEnums[pos.col, pos.row] = MapTileEnum.enemy;
-        }*/
         Console.SetCursorPosition(pos.col, pos.row);
         Console.Write(this.avatar);
-        /*
-                if (this is Player)
-                {
-                    Console.Write('@');
-                }
-                else if ( this is Enemy)
-                {
-                    Console.Write(this.avatar);
-
-                }*/
-        //Console.Write(Sprites.GetCharFromEnum(currentMap.mapOfEnums[pos.col, pos.row]));
     }
     protected void PutPreviousTileOnScreen(Position position)
     {
-        /*        currentMap.mapOfEnums[position.col, position.row] = MapTileEnum.air;
-                Console.SetCursorPosition(position.col, position.row);
-                Console.Write(Sprites.GetCharFromEnum(currentMap.mapOfEnums[position.col, position.row]));
-        */
         // wywalic cala ta metode i zbudowac w przy slowniku metode ktora wypisuje i moze tez zmienia kolor
         Console.SetCursorPosition(position.col, position.row);
         Console.Write(BigTileSprite.fromSmallTileToChar[currentChunk.smallTilesMap[position.col, position.row]]);
@@ -260,9 +232,6 @@ public class Enemy : Character
         logicOnPosition = new()
         {
             //{SmallTile.wall,()=> canMove = false},
-            //{MapTileEnum.vertPortal,()=> canMove = false},
-            //{MapTileEnum.horrPortal,()=> canMove = false},
-            //{SmallTile.grass,()=> grassPoints++ },
             {SmallTile.grass,()=> GrassMethod() },
             {SmallTile.enemy,()=> FightyFight(pos)}
 
@@ -300,11 +269,8 @@ public class Player : Character
         logicOnPosition = new()
         {
             //{SmallTile.wall,()=> canMove = false},
-            //{SmallTile.grass,()=> grassPoints++ },
             {SmallTile.grass,()=> GrassMethod() },
             {SmallTile.enemy,()=> FightyFight(pos)},
-            //{MapTileEnum.horrPortal,()=> horrPortalLogic() },
-            //{MapTileEnum.vertPortal,()=> vertPortalLogic() }
         };
         movementDictionary.Add(ConsoleKey.M, () => Menu.GetMenu(this));
 
@@ -316,24 +282,4 @@ public class Player : Character
 
         MovementAfterInput();
     }
-    /*
-        private void horrPortalLogic()
-        {
-            canMove = false;
-            PutPreviousTileOnScreen(previousPosition);
-            currentMap = MapHolder.mapHorr;
-            currentMap.PrintMap();
-            pos = previousPosition;
-            PutCharacterOnMap();
-        }
-        private void vertPortalLogic()
-        {
-            canMove = false;
-            PutPreviousTileOnScreen(previousPosition);
-            currentMap = MapHolder.mapVert;
-            currentMap.PrintMap();
-            pos = previousPosition;
-            PutCharacterOnMap();
-        }
-    */
 }
