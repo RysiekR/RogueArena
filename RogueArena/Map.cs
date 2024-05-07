@@ -21,10 +21,7 @@ public enum BigTile //5x5 sprite name
 public static class ChunkHolder
 {
     public static ChunkCoordinates firstChunkCoordinates = new ChunkCoordinates(0, 0);
-    public static Dictionary<ChunkCoordinates, Chunk> chunkData = new()
-    /*{
-        { firstChunkCoordinates, new Chunk(firstChunkCoordinates) }
-    }*/;
+    public static Dictionary<ChunkCoordinates, Chunk> chunkData = new();
 }
 public class Chunk
 {
