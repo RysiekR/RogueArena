@@ -124,7 +124,7 @@ public abstract class Character
         {
             if (CheckIfChunkBorder(pos))
             {
-                GenerateAndPlaceOnNewChunk(pos);
+                GenerateAndPlaceOnNewChunk();
             }
         }
         //make logic on pos if canmove true then move else make other action and set pos to previous position
@@ -159,12 +159,12 @@ public abstract class Character
             nextChunkCoordinates = new ChunkCoordinates(currentChunkCoordinates.x + 1, currentChunkCoordinates.y);
             return true;
         }
-        if (position.row == currentChunk.topBorder )
+        if (position.row == currentChunk.topBorder)
         {
             nextChunkCoordinates = new ChunkCoordinates(currentChunkCoordinates.x, currentChunkCoordinates.y - 1);
             return true;
         }
-        else if(position.row == currentChunk.bottomBorder)
+        else if (position.row == currentChunk.bottomBorder)
         {
             nextChunkCoordinates = new ChunkCoordinates(currentChunkCoordinates.x, currentChunkCoordinates.y + 1);
             return true;
@@ -172,14 +172,12 @@ public abstract class Character
 
         return false;
     }
-    private void GenerateAndPlaceOnNewChunk(Position position)
+    private void GenerateAndPlaceOnNewChunk()
     {
 
         if (ChunkHolder.chunkData.ContainsKey(nextChunkCoordinates))
         {
             currentChunk = ChunkHolder.chunkData[nextChunkCoordinates];
-            pos = new(10, 10);
-
         }
         else
         {
@@ -187,7 +185,24 @@ public abstract class Character
             currentChunk = nextChunk;
         }
         currentChunkCoordinates = nextChunkCoordinates;
-        pos = new(10, 10);
+        if (pos.col == currentChunk.leftBorder)
+        {
+            pos = new Position(pos.row, currentChunk.rightBorder - 1);
+        }
+        else if (pos.col == currentChunk.rightBorder)
+        {
+            pos = new Position(pos.row, currentChunk.leftBorder + 1);
+
+        }
+        else if (pos.row == currentChunk.bottomBorder)
+        {
+            pos = new Position(currentChunk.topBorder + 1, pos.col);
+        }
+        else if (pos.row == currentChunk.topBorder)
+        {
+            pos = new Position(currentChunk.bottomBorder - 1, pos.col);
+
+        }
         currentChunk.PrintMap();
         InitializeCharacter();
 
@@ -216,7 +231,7 @@ public abstract class Character
     protected void GrassMethod()
     {
         grassPoints++;
-        currentChunk.smallTilesMap[pos.col,pos.row] = SmallTile.empty;
+        currentChunk.smallTilesMap[pos.col, pos.row] = SmallTile.empty;
     }
 }
 
