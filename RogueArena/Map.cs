@@ -25,6 +25,7 @@ public static class ChunkHolder
 }
 public class Chunk
 {
+    private static Random random = new Random();
     public ChunkCoordinates ownCoordinates { get; private set; }
     public const int bigTileWidth = 24;//x axis size
     public const int bigTileHeight = 10;//y axis size
@@ -40,8 +41,8 @@ public class Chunk
     {
         rightBorder = bigTileWidth * BigTileSprite.smallTileWidth - 1;
         bottomBorder = bigTileHeight * BigTileSprite.smallTileHeight - 1;
-        CreateBigAndSmallMap();
         ownCoordinates = chunkCoordinates;
+        CreateBigAndSmallMap();
         ChunkHolder.chunkData.Add(chunkCoordinates, this);
     }
     private void CreateBigAndSmallMap()
@@ -51,8 +52,15 @@ public class Chunk
             for (int j = 0; j < bigTileWidth; j++)
             {
                 //i to y, j to x
+
+                //algorytm brasenhama do wsadzenia sciezek do zrobienia
+                //if bigTileMap[j,i] == null || empty 
+                // wtedy get random
+
                 //random sprite dodaj do tablicy spritow
                 bigTileMap[j, i] = (BigTileSprite.GetNewRandomBigTileSprite());
+
+
                 // a teraz z kazdej duzej komorki pododawac do malej
                 for (int k = 0; k < BigTileSprite.smallTileHeight; k++)
                 {
@@ -93,15 +101,93 @@ public class Chunk
     }
     public void PrintChunkCoordinates()
     {
-        Console.SetCursorPosition(bigTileWidth * BigTileSprite.smallTileWidth + 5,5);
+        Console.SetCursorPosition(bigTileWidth * BigTileSprite.smallTileWidth + 5, 5);
         Console.WriteLine($"Current Chunk Coordinates:");
-        for (int i = 0; i < 10;i++)
+        for (int i = 0; i < 10; i++)
         {
             Console.SetCursorPosition(bigTileWidth * BigTileSprite.smallTileWidth + 5 + i, 6);
             Console.Write(' ');
         }
         Console.SetCursorPosition(bigTileWidth * BigTileSprite.smallTileWidth + 5, 6);
         Console.WriteLine($"{ownCoordinates.x}/{ownCoordinates.y}");
+
+    }
+    private void FindAndJoinPaths()
+    {
+        int leftBorderPos;
+        int rightBorderPos;
+        int topBorderPos;
+        int bottomBorderPos;
+
+        ChunkCoordinates leftChunkCoordinates = new ChunkCoordinates(ownCoordinates.x - 1, ownCoordinates.y);
+        ChunkCoordinates rightChunkCoordinates = new ChunkCoordinates(ownCoordinates.x + 1, ownCoordinates.y);
+        ChunkCoordinates topChunkCoordinates = new ChunkCoordinates(ownCoordinates.x, ownCoordinates.y - 1);
+        ChunkCoordinates bottomChunkCoordinates = new ChunkCoordinates(ownCoordinates.x, ownCoordinates.y + 1);
+
+        if (ChunkHolder.chunkData.ContainsKey(leftChunkCoordinates))
+        {
+            for (int i = 0; i < bigTileHeight - 1; i++)
+            {
+                if (ChunkHolder.chunkData[leftChunkCoordinates].bigTileMap[bigTileWidth - 1, i].spriteName is BigTile.Path)
+                {
+                    leftBorderPos = i;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            if (random.Next(1, 11) > 8) leftBorderPos = random.Next(1, bigTileHeight - 1);
+        }
+
+        if (ChunkHolder.chunkData.ContainsKey(rightChunkCoordinates))
+        {
+            for (int i = 0; i < bigTileHeight - 1; i++)
+            {
+                if (ChunkHolder.chunkData[rightChunkCoordinates].bigTileMap[0, i].spriteName is BigTile.Path)
+                {
+                    rightBorderPos = i;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            if (random.Next(1, 11) > 8) rightBorderPos = random.Next(1, bigTileHeight - 1);
+        }
+
+        if (ChunkHolder.chunkData.ContainsKey(topChunkCoordinates))
+        {
+            for (int i = 0; i < bigTileWidth - 1; i++)
+            {
+                if (ChunkHolder.chunkData[topChunkCoordinates].bigTileMap[i, bigTileHeight - 1].spriteName is BigTile.Path)
+                {
+                    topBorderPos = i;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            if (random.Next(1, 11) > 8) topBorderPos = random.Next(1, bigTileWidth - 1);
+        }
+
+        if (ChunkHolder.chunkData.ContainsKey(bottomChunkCoordinates))
+        {
+            for (int i = 0; i < bigTileWidth - 1; i++)
+            {
+                if (ChunkHolder.chunkData[bottomChunkCoordinates].bigTileMap[i, 0].spriteName is BigTile.Path)
+                {
+                    bottomBorderPos = i;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            if (random.Next(1, 11) > 8) bottomBorderPos = random.Next(1, bigTileWidth - 1);
+        }
+
 
     }
 }
