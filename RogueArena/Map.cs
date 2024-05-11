@@ -42,8 +42,20 @@ public class Chunk
         rightBorder = bigTileWidth * BigTileSprite.smallTileWidth - 1;
         bottomBorder = bigTileHeight * BigTileSprite.smallTileHeight - 1;
         ownCoordinates = chunkCoordinates;
+        FindAndJoinPaths();
         CreateBigAndSmallMap();
         ChunkHolder.chunkData.Add(chunkCoordinates, this);
+    }
+    public Chunk(ChunkCoordinates chunkCoordinates, bool USEONLYIFITSFIRSTCHUNK)
+    {
+        if (USEONLYIFITSFIRSTCHUNK)
+        {
+            rightBorder = bigTileWidth * BigTileSprite.smallTileWidth - 1;
+            bottomBorder = bigTileHeight * BigTileSprite.smallTileHeight - 1;
+            ownCoordinates = chunkCoordinates;
+            CreateBigAndSmallMap();
+            ChunkHolder.chunkData.Add(chunkCoordinates, this);
+        }
     }
     private void CreateBigAndSmallMap()
     {
@@ -58,7 +70,10 @@ public class Chunk
                 // wtedy get random
 
                 //random sprite dodaj do tablicy spritow
-                bigTileMap[j, i] = (BigTileSprite.GetNewRandomBigTileSprite());
+                if (bigTileMap[j,i] == null)
+                {
+                    bigTileMap[j, i] = (BigTileSprite.GetNewRandomBigTileSprite());
+                }
 
 
                 // a teraz z kazdej duzej komorki pododawac do malej
@@ -114,11 +129,11 @@ public class Chunk
     }
     private void FindAndJoinPaths()
     {
-        int leftBorderPos;
-        int rightBorderPos;
-        int topBorderPos;
-        int bottomBorderPos;
-
+        int leftBorderPos = 0;
+        int rightBorderPos = 0;
+        int topBorderPos = 0;
+        int bottomBorderPos = 0;
+        int chance = 1; // wieksze niz chance (1 do 10)
         ChunkCoordinates leftChunkCoordinates = new ChunkCoordinates(ownCoordinates.x - 1, ownCoordinates.y);
         ChunkCoordinates rightChunkCoordinates = new ChunkCoordinates(ownCoordinates.x + 1, ownCoordinates.y);
         ChunkCoordinates topChunkCoordinates = new ChunkCoordinates(ownCoordinates.x, ownCoordinates.y - 1);
@@ -137,7 +152,8 @@ public class Chunk
         }
         else
         {
-            if (random.Next(1, 11) > 8) leftBorderPos = random.Next(1, bigTileHeight - 1);
+            leftBorderPos = random.Next(1, bigTileHeight - 2);
+            //if (random.Next(1, 11) > chance) leftBorderPos = random.Next(1, bigTileHeight - 1);
         }
 
         if (ChunkHolder.chunkData.ContainsKey(rightChunkCoordinates))
@@ -153,7 +169,8 @@ public class Chunk
         }
         else
         {
-            if (random.Next(1, 11) > 8) rightBorderPos = random.Next(1, bigTileHeight - 1);
+            rightBorderPos = random.Next(1, bigTileHeight - 2);
+            //if (random.Next(1, 11) > chance) rightBorderPos = random.Next(1, bigTileHeight - 1);
         }
 
         if (ChunkHolder.chunkData.ContainsKey(topChunkCoordinates))
@@ -169,7 +186,8 @@ public class Chunk
         }
         else
         {
-            if (random.Next(1, 11) > 8) topBorderPos = random.Next(1, bigTileWidth - 1);
+            topBorderPos = random.Next(1, bigTileWidth - 2);
+            //if (random.Next(1, 11) > chance) topBorderPos = random.Next(1, bigTileWidth - 1);
         }
 
         if (ChunkHolder.chunkData.ContainsKey(bottomChunkCoordinates))
@@ -185,10 +203,54 @@ public class Chunk
         }
         else
         {
-            if (random.Next(1, 11) > 8) bottomBorderPos = random.Next(1, bigTileWidth - 1);
+            bottomBorderPos = random.Next(1, bigTileWidth - 2);
+            bottomBorderPos = 1;
+            //if (random.Next(1, 11) > chance) bottomBorderPos = random.Next(1, bigTileWidth - 1);
         }
 
 
+        FillAToBWith((0, leftBorderPos), (bigTileWidth - 1, rightBorderPos), BigTile.Path);
+        FillAToBWith((topBorderPos, 0), (bottomBorderPos, bigTileHeight - 1), BigTile.Path);
+    }
+
+    /*private void FillAToBWith( (int x, int y) coordsA, (int x, int y) coordsB, BigTile tile)
+    {
+
+        
+
+        //bigTileMap[x, y] = new BigTileSprite(tile);
+    }*/
+
+    private void FillAToBWith((int x, int y) coordsA, (int x, int y) coordsB, BigTile tile)
+    {
+        int x0 = coordsA.x, y0 = coordsA.y, x1 = coordsB.x, y1 = coordsB.y;
+        int dx = Math.Abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
+        int dy = -Math.Abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
+        int err = dx + dy, e2;
+
+        while (true)
+        {
+            /*if (x0 >= 0 && x0 < bigTileWidth && y0 >= 0 && y0 < bigTileHeight)
+            {
+            }*/
+                bigTileMap[x0, y0] = new BigTileSprite(tile);
+            if (x0 == x1 && y0 == y1)
+                break;
+
+            e2 = 2 * err;
+
+            if (e2 >= dy)
+            {
+                err += dy;
+                x0 += sx;
+            }
+
+            if (e2 <= dx)
+            {
+                err += dx;
+                y0 += sy;
+            }
+        }
     }
 }
 public struct ChunkCoordinates
@@ -249,10 +311,10 @@ public class BigTileSprite
         {
             return BigTile.Tree;
         }
-        else if (temp > 90)
+        /*else if (temp > 90)
         {
             return BigTile.Path;
-        }
+        }*/
         else if (temp > 10)
         {
             return BigTile.Air;

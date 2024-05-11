@@ -1,7 +1,7 @@
 ﻿Console.ReadKey();
 Console.CursorVisible = false;
 
-Chunk firstChunk = new Chunk(ChunkHolder.firstChunkCoordinates);
+Chunk firstChunk = new Chunk(ChunkHolder.firstChunkCoordinates,true);
 Player player = new(new Position(5, 5), ChunkHolder.chunkData[ChunkHolder.firstChunkCoordinates]);
 player.currentChunk.PrintMap();
 player.InitializeCharacter();
