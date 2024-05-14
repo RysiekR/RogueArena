@@ -27,8 +27,8 @@ public class Chunk
 {
     private static Random random = new Random();
     public ChunkCoordinates ownCoordinates { get; private set; }
-    public const int bigTileWidth = 24;//x axis size
-    public const int bigTileHeight = 10;//y axis size
+    public const int bigTileWidth = 40;//x axis size
+    public const int bigTileHeight = 16;//y axis size
     public BigTileSprite[,] bigTileMap = new BigTileSprite[bigTileWidth, bigTileHeight];
     public SmallTile[,] smallTilesMap = new SmallTile[BigTileSprite.smallTileWidth * bigTileWidth, BigTileSprite.smallTileHeight * bigTileHeight];
     public List<Enemy> enemiesList = new List<Enemy>();
@@ -395,8 +395,8 @@ public class BigTileSprite
     }
 
     //BigTileSprite statics
-    public const int smallTileWidth = 5;//sprite size
-    public const int smallTileHeight = 5;
+    public const int smallTileWidth = 3;//sprite size
+    public const int smallTileHeight = 3;
     public static BigTileSprite GetNewRandomBigTileSprite()
     {
         return new BigTileSprite(GetRandomBigTile());
@@ -413,7 +413,7 @@ public class BigTileSprite
         {
             return BigTile.Path;
         }*/
-        else if (temp > 10)
+        else if (temp > 5)
         {
             return BigTile.Air;
         }
@@ -454,35 +454,27 @@ public class BigTileSprite
 
     public static readonly string[] airSprite = new string[smallTileHeight]
     {
-        ", , ,",
-        " , , ",
-        ", , ,",
-        " , , ",
-        ", , ,"
+        ", ,",
+        " , ",
+        ", ,",
     };
     public static readonly string[] emptySprite = new string[smallTileHeight]
     {
-        "     ",
-        "     ",
-        "     ",
-        "     ",
-        "     "
+        "   ",
+        "   ",
+        "   ",
     };
     public static readonly string[] treeSprite = new string[smallTileHeight]
     {
-        "     ",
-        " *** ",
-        " *T* ",
-        "  T  ",
-        "     "
+        "***",
+        "*T*",
+        " T ",
     };
     public static readonly string[] pathSprite = new string[smallTileHeight]
     {
-        ".....",
-        ".....",
-        ".....",
-        ".....",
-        "....."
+        "...",
+        "...",
+        "...",
     };
 
 }
