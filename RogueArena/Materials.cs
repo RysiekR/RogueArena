@@ -33,7 +33,7 @@ public static class FactoryInventory
     {
         if(wantRandom)
         {
-            return GetPouch(resType, random.Next(0, 5), random.Next(0, 5), random.Next(0, 5));
+            return GetPouch(resType, random.Next(0, InventoryItem.pouchCap), random.Next(0, InventoryItem.pouchCap), random.Next(0, InventoryItem.pouchCap));
         }
         else
         {
@@ -52,7 +52,7 @@ public static class FactoryInventory
     {
         if(wantRandom)
         {
-            return GetBag(resType, random.Next(0, 25), random.Next(0, 25), random.Next(0, 25));
+            return GetBag(resType, random.Next(0, InventoryItem.bagCap), random.Next(0, InventoryItem.bagCap), random.Next(0, InventoryItem.bagCap));
         }
         else
         {
@@ -71,7 +71,7 @@ public static class FactoryInventory
     {
         if(wantRandom)
         {
-            return GetMagicBag(resType, random.Next(0, 125), random.Next(0, 125), random.Next(0, 125));
+            return GetMagicBag(resType, random.Next(0, InventoryItem.magicBagCap), random.Next(0, InventoryItem.magicBagCap), random.Next(0, InventoryItem.magicBagCap));
         }
         else
         {
@@ -79,8 +79,10 @@ public static class FactoryInventory
         }
     }
 }
-public class InventoryItem
+public abstract class InventoryItem
 {
+    public const int pouchCap = 5, bagCap = 25, magicBagCap = 125;
+
     public Resources ResourceType { get; private set; }
     public int[] resArray { get; private set; }
     public int Capacity { get; private set; }
@@ -146,7 +148,7 @@ public class InventoryItem
 public class Pouch : InventoryItem
 {
     public string name { get; private set; } = "Pouch";
-    public Pouch(Resources resourceType) : base(resourceType, 5) // Pouch can hold 5 items
+    public Pouch(Resources resourceType) : base(resourceType, pouchCap) // Pouch can hold 5 items
     {
     }
 }
@@ -155,7 +157,7 @@ public class Bag : InventoryItem
 {
     public string name { get; private set; } = "Bag";
 
-    public Bag(Resources resourceType) : base(resourceType, 25) // Bag can hold 25 items
+    public Bag(Resources resourceType) : base(resourceType, bagCap) // Bag can hold 25 items
     {
     }
 }
@@ -164,7 +166,7 @@ public class MagicBag : InventoryItem
 {
     public string name { get; private set; } = "Magic Bag";
 
-    public MagicBag(Resources resourceType) : base(resourceType, 125) // MagicBag can hold 125 items
+    public MagicBag(Resources resourceType) : base(resourceType, magicBagCap) // MagicBag can hold 125 items
     {
     }
 }
