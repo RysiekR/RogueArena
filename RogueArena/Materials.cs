@@ -21,7 +21,7 @@ public enum ResQuality
 public static class FactoryInventory
 {
     private static Random random = new Random();
-    public static Pouch GetPouch(Resources resType,int poor, int normal, int good)
+    public static Pouch GetPouch(Resources resType, int poor, int normal, int good)
     {
         Pouch pouch = new Pouch(resType);
         pouch.AddRes(poor, (ResQuality)0);
@@ -31,16 +31,16 @@ public static class FactoryInventory
     }
     public static Pouch GetPouch(Resources resType, bool wantRandom)
     {
-        if(wantRandom)
+        if (wantRandom)
         {
             return GetPouch(resType, random.Next(0, InventoryItem.pouchCap), random.Next(0, InventoryItem.pouchCap), random.Next(0, InventoryItem.pouchCap));
         }
         else
         {
-            return GetPouch(resType,0,0,0);
+            return GetPouch(resType, 0, 0, 0);
         }
     }
-    public static Pouch GetBag(Resources resType,int poor, int normal, int good)
+    public static Pouch GetBag(Resources resType, int poor, int normal, int good)
     {
         Pouch pouch = new Pouch(resType);
         pouch.AddRes(poor, (ResQuality)0);
@@ -50,16 +50,16 @@ public static class FactoryInventory
     }
     public static Pouch GetBag(Resources resType, bool wantRandom)
     {
-        if(wantRandom)
+        if (wantRandom)
         {
             return GetBag(resType, random.Next(0, InventoryItem.bagCap), random.Next(0, InventoryItem.bagCap), random.Next(0, InventoryItem.bagCap));
         }
         else
         {
-            return GetBag(resType,0,0,0);
+            return GetBag(resType, 0, 0, 0);
         }
     }
-    public static Pouch GetMagicBag(Resources resType,int poor, int normal, int good)
+    public static Pouch GetMagicBag(Resources resType, int poor, int normal, int good)
     {
         Pouch pouch = new Pouch(resType);
         pouch.AddRes(poor, (ResQuality)0);
@@ -69,13 +69,13 @@ public static class FactoryInventory
     }
     public static Pouch GetMagicBag(Resources resType, bool wantRandom)
     {
-        if(wantRandom)
+        if (wantRandom)
         {
             return GetMagicBag(resType, random.Next(0, InventoryItem.magicBagCap), random.Next(0, InventoryItem.magicBagCap), random.Next(0, InventoryItem.magicBagCap));
         }
         else
         {
-            return GetMagicBag(resType,0,0,0);
+            return GetMagicBag(resType, 0, 0, 0);
         }
     }
 }
@@ -93,7 +93,15 @@ public abstract class InventoryItem
         Capacity = capacity;
         resArray = new int[] { 0, 0, 0 };
     }
-
+    public void DebugInv()
+    {
+        Console.WriteLine($"this inv is a {ResourceType} holder");
+        Console.WriteLine("and has :");
+        for (int i = 0; i < resArray.Length; i++)
+        {
+            Console.WriteLine($"{resArray[i]} amount of quality {Enum.GetName(typeof(ResQuality), i)}");
+        }
+    }
 
     // Methods to manipulate the inventory item, like adding or using resources
     public int AddRes(int ammount, ResQuality quality) // zrobione jako int zeby mocdodawac resource do player inventorys a jak bedzie  pelne to zostawiac je na ziemi
@@ -102,8 +110,11 @@ public abstract class InventoryItem
         {
             return 0;
         }
-        int leftAmmount;
-        leftAmmount = Capacity - resArray[(int)quality] - ammount;
+        int leftAmmount = ammount - (Capacity - resArray[(int)quality]);
+        if (leftAmmount < 0)
+        {
+            leftAmmount = 0;
+        }
         if (resArray[(int)quality] + ammount <= Capacity)
         {
             resArray[(int)quality] += ammount;
@@ -112,12 +123,12 @@ public abstract class InventoryItem
         {
             resArray[(int)quality] = Capacity;
         }
-        leftAmmount = int.Abs(leftAmmount);
+        //leftAmmount = int.Abs(leftAmmount);
         return leftAmmount;
     }
-    public void RemoveRes(int ammount)
+    public bool RemoveRes(int ammount)
     {
-        RemoveRes(ammount, ResQuality.Poor);
+        return RemoveRes(ammount, ResQuality.Poor);
     }
     public bool RemoveRes(int ammount, ResQuality quality) // zrobione jako bool zeby mozna bylo wykorzystac w craftowaniu
     {
@@ -125,47 +136,44 @@ public abstract class InventoryItem
         {
             return false;
         }
-        if (ammount <= resArray[(int)quality])
+        else
         {
-            resArray[(int)quality] -= ammount;
-            return true;
-        }
-        else if (ammount <= (resArray[(int)quality + 1]*2 + resArray[(int)quality]) && (int)quality < 2)
-        {
-            ammount -= resArray[(int)quality];
-            ammount = (ammount % 2 == 1) ? (ammount / 2) + 1 : ammount / 2;
+            if (ammount <= resArray[(int)quality])
+            {
+                resArray[(int)quality] -= ammount;
+                return true;
+            }
+            else if ((int)quality < 2)
+            {
+                if (ammount <= (resArray[(int)quality + 1] * 2 + resArray[(int)quality]))
+                {
+                    ammount -= resArray[(int)quality];
+                    ammount = (ammount % 2 == 1) ? (ammount / 2) + 1 : ammount / 2;
 
-            resArray[(int)quality + 1] -= ammount;
-            resArray[(int)quality] = 0;
-            return true;
-        }
-        /*else if (ammount <= (resArray[(int)quality + 1] + resArray[(int)quality]) && (int)quality < 2)
-        {
-            resArray[(int)quality + 1] -= (ammount + resArray[(int)quality]);
-            resArray[(int)quality] = 0;
-            return true;
-        }*/
-        else if (ammount <= resArray[(int)quality + 2]*3 + resArray[(int)quality + 1]*2 + resArray[(int)quality] && (int)quality < 1)
-        {
-            ammount -= resArray[(int)quality];
-            ammount = (ammount % 2 == 1) ? (ammount / 2) + 1 : ammount / 2;
-            ammount -= resArray[(int)quality + 1];
-            ammount = ((ammount % 3) > 0) ? (ammount / 3) + 1 : ammount / 3;
+                    resArray[(int)quality + 1] -= ammount;
+                    resArray[(int)quality] = 0;
+                    return true;
+                }
+                else if ((int)quality < 1)
+                {
+                    if (ammount <= resArray[(int)quality + 2] * 3 + resArray[(int)quality + 1] * 2 + resArray[(int)quality])
+                    {
+                        ammount -= resArray[(int)quality];
+                        ammount = (ammount % 2 == 1) ? (ammount / 2) + 1 : ammount / 2;
+                        ammount -= resArray[(int)quality + 1];
+                        ammount = ((ammount % 3) > 0) ? (ammount / 3) + 1 : ammount / 3;
 
-            resArray[(int)quality + 2]-= ammount;
-            resArray[(int)quality + 1] = 0;
-            resArray[(int)quality] = 0;
-            return true;
+                        resArray[(int)quality + 2] -= ammount;
+                        resArray[(int)quality + 1] = 0;
+                        resArray[(int)quality] = 0;
+                        return true;
+                    }
+                    else return false;
+                }
+                else return false;
+            }
+            else return false;
         }
-        /*else if (ammount <= (resArray[(int)quality + 2]) + resArray[(int)quality + 1] + resArray[(int)quality] && (int)quality < 1)
-        {
-            resArray[(int)quality + 2] -= (ammount + resArray[(int)quality + 1] + resArray[(int)quality]);
-            resArray[(int)quality + 1] = 0;
-            resArray[(int)quality] = 0;
-            return true;
-        }
-*/
-        else return false;
     }
     public void ChangeResourceType(Resources resourceType)
     {

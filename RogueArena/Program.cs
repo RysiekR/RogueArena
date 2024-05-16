@@ -1,4 +1,4 @@
-﻿Console.ReadKey();
+﻿/*Console.ReadKey();
 Console.CursorVisible = false;
 
 Chunk firstChunk = new Chunk(ChunkHolder.firstChunkCoordinates,true);
@@ -16,7 +16,34 @@ while (true)
     {
         enemy.MakeAMove();
     }
+}*/
+
+using static FactoryInventory;
+//Pouch pouch1 = GetPouch(Resources.Wood,true);
+Pouch pouch1 = GetPouch(Resources.Wood,0,0,0);
+pouch1.DebugInv();
+Console.WriteLine($"nie dodane: {pouch1.AddRes(3,ResQuality.Normal)}");
+pouch1.DebugInv();
+if (pouch1.RemoveRes(3))
+{
+    Console.WriteLine("jest wystarczajaco surowcow");
 }
+else
+{
+    Console.WriteLine("nie wystarczajaco");
+}
+pouch1.DebugInv();
+Console.WriteLine($"nie dodane: {pouch1.AddRes(3, ResQuality.Poor)}");
+pouch1.DebugInv();
+if (pouch1.RemoveRes(3, ResQuality.Normal))
+{
+    Console.WriteLine("jest wystarczajaco surowcow");
+}
+else
+{
+    Console.WriteLine("nie wystarczajaco");
+}
+pouch1.DebugInv();
 
 /*
 bool continueLoop = true;
