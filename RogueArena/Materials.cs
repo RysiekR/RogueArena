@@ -3,13 +3,13 @@
 //
 public enum Resources
 {
-    Grass = 0,
-    Sticks = 1,
-    Wood = 2,
-    Stone = 3,
-    Leather = 4,
-    CopperOre = 5,
-    IronOre = 6,
+    Grass = 0, // ','
+    Sticks = 1, // '-'
+    Wood = 2, // 't'
+    Stone = 3, // 's'
+    Leather = 4, // 'l'
+    CopperOre = 5, // 'c'
+    IronOre = 6, // 'i'
 }
 public enum ResQuality
 {

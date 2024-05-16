@@ -1,7 +1,7 @@
-﻿/*Console.ReadKey();
+﻿Console.ReadKey();
 Console.CursorVisible = false;
 
-Chunk firstChunk = new Chunk(ChunkHolder.firstChunkCoordinates,true);
+Chunk firstChunk = new Chunk(ChunkHolder.firstChunkCoordinates, true);
 Player player = new(new Position(5, 5), ChunkHolder.chunkData[ChunkHolder.firstChunkCoordinates]);
 player.currentChunk.PrintMap();
 player.InitializeCharacter();
@@ -16,8 +16,8 @@ while (true)
     {
         enemy.MakeAMove();
     }
-}*/
-
+}
+/*
 using static FactoryInventory;
 //Pouch pouch1 = GetPouch(Resources.Wood,true);
 Pouch pouch1 = GetPouch(Resources.Wood,0,0,0);
@@ -44,7 +44,7 @@ else
     Console.WriteLine("nie wystarczajaco");
 }
 pouch1.DebugInv();
-
+*/
 /*
 bool continueLoop = true;
 do

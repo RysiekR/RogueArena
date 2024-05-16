@@ -25,6 +25,7 @@ public static class ChunkHolder
 }
 public class Chunk
 {
+    public Dictionary<(int x, int y),InventoryItem> nazwa;
     private static Random random = new Random();
     public ChunkCoordinates ownCoordinates { get; private set; }
     public const int bigTileWidth = 40;//x axis size
