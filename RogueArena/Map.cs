@@ -25,7 +25,6 @@ public static class ChunkHolder
 }
 public class Chunk
 {
-    public Dictionary<(int x, int y),InventoryItem> nazwa;
     private static Random random = new Random();
     public ChunkCoordinates ownCoordinates { get; private set; }
     public const int bigTileWidth = 40;//x axis size
@@ -33,6 +32,7 @@ public class Chunk
     public BigTileSprite[,] bigTileMap = new BigTileSprite[bigTileWidth, bigTileHeight];
     public SmallTile[,] smallTilesMap = new SmallTile[BigTileSprite.smallTileWidth * bigTileWidth, BigTileSprite.smallTileHeight * bigTileHeight];
     public List<Enemy> enemiesList = new List<Enemy>();
+    public List<(Tuple<int , int >, Pouch)> droppedResources = new List<(Tuple<int , int>, Pouch)>();
     public int leftBorder { get; private set; } = 0;
     public int topBorder { get; private set; } = 0;
     public int rightBorder { get; private set; }
@@ -125,6 +125,7 @@ public class Chunk
             }
         }
         PrintChunkCoordinates();
+        DropedResources();
     }
     public Character GetCharacterInPosition(Position position)
     {
@@ -252,21 +253,21 @@ public class Chunk
 
         //zrobic liste z sciezkami wylosowanymi i je polaczyc metoda fill
         List<(int x, int y)> coordsOfPathsOnBorder = GetListOfThisTile(BigTile.Path);
-/*
-        if (coordsOfPathsOnBorder.Count > 2)
-        {
-            int A = random.Next(0, coordsOfPathsOnBorder.Count);
-            (int x, int y) coordsA = coordsOfPathsOnBorder[A];
-            coordsOfPathsOnBorder.Remove(coordsA);
-            int B = random.Next(0, coordsOfPathsOnBorder.Count);
-            (int x, int y) coordsB = coordsOfPathsOnBorder[B];
-            FillAToBWith(coordsA, coordsB, BigTile.Path);
-        }
-*/
+        /*
+                if (coordsOfPathsOnBorder.Count > 2)
+                {
+                    int A = random.Next(0, coordsOfPathsOnBorder.Count);
+                    (int x, int y) coordsA = coordsOfPathsOnBorder[A];
+                    coordsOfPathsOnBorder.Remove(coordsA);
+                    int B = random.Next(0, coordsOfPathsOnBorder.Count);
+                    (int x, int y) coordsB = coordsOfPathsOnBorder[B];
+                    FillAToBWith(coordsA, coordsB, BigTile.Path);
+                }
+        */
         if (coordsOfPathsOnBorder.Count == 1)
         {
         }
-        else if(coordsOfPathsOnBorder.Count == 2)
+        else if (coordsOfPathsOnBorder.Count == 2)
         {
             (int x, int y) coordsA = coordsOfPathsOnBorder[0];
             (int x, int y) coordsB = coordsOfPathsOnBorder[1];
@@ -277,12 +278,12 @@ public class Chunk
             (int x, int y) coordsA = coordsOfPathsOnBorder[0];
             (int x, int y) coordsB = coordsOfPathsOnBorder[1];
             (int x, int y) coordsC = coordsOfPathsOnBorder[2];
-                //= GetListOfThisTile(BigTile.Path)[random.Next(2, GetListOfThisTile(BigTile.Path).Count)];
+            //= GetListOfThisTile(BigTile.Path)[random.Next(2, GetListOfThisTile(BigTile.Path).Count)];
             FillAToBWith(coordsA, coordsB, BigTile.Path);
             (int x, int y) coordsD = GetListOfThisTile(BigTile.Path)[random.Next(1, GetListOfThisTile(BigTile.Path).Count)];
             FillAToBWith(coordsC, coordsD, BigTile.Path);
         }
-        else if(coordsOfPathsOnBorder.Count == 4)
+        else if (coordsOfPathsOnBorder.Count == 4)
         {
             (int x, int y) coordsA = coordsOfPathsOnBorder[0];
             (int x, int y) coordsB = coordsOfPathsOnBorder[1];
@@ -302,7 +303,14 @@ public class Chunk
                 FillAToBWith((topBorderPos, 0), (bottomBorderPos, bigTileHeight - 1), BigTile.Path);
         */
     }
-
+    private void DropedResources()
+    {
+        foreach (var r in droppedResources)
+        {
+            Console.SetCursorPosition(r.Item1.Item1, r.Item1.Item2);
+            Console.Write('P');
+        }
+    }
 
     private void FillAToBWith((int x, int y) coordsA, (int x, int y) coordsB, BigTile tile)
     {

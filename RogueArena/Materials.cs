@@ -17,7 +17,20 @@ public enum ResQuality
     Normal = 1,
     Good = 2,
 }
+public static class ResDic
+{
+    public static Dictionary<Resources, char> ResourcesCharRepresantation = new Dictionary<Resources, char>()
+    {
+        {Resources.Grass, ','},
+        {Resources.Sticks, '-'},
+        {Resources.Wood, 't'},
+        {Resources.Stone, 's'},
+        {Resources.Leather, 'l'},
+        {Resources.CopperOre, 'c'},
+        {Resources.IronOre, 'i'}
+    };
 
+}
 public static class FactoryInventory
 {
     private static Random random = new Random();

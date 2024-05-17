@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.Generic;
+
 public abstract class Character
 {
     public Chunk currentChunk;
@@ -16,6 +18,8 @@ public abstract class Character
     public int grassPoints { get; protected set; } = 0;
     protected Dictionary<ConsoleKey, Action> movementDictionary;
     protected Dictionary<SmallTile, Action> logicOnPosition;
+    protected Dictionary<Resources, Action> pickUpDictionary;
+
     protected ConsoleKey movementKey;
     public Character(Position position, Chunk currentChunk)
     {
@@ -274,9 +278,11 @@ public class Enemy : Character
 
 public class Player : Character
 {
-
+    public int numberOfInventories = 5;
+    public InventoryItem[] inventories;
     public Player(Position position, Chunk currentChunk) : base(position, currentChunk)
     {
+        inventories = new InventoryItem[numberOfInventories];
         avatar = '@';
         this.currentChunk = currentChunk;
         pos = position;
@@ -289,6 +295,10 @@ public class Player : Character
             {SmallTile.trunk,()=> ChopTree(pos) }
         };
         movementDictionary.Add(ConsoleKey.M, () => Menu.GetMenu(this));
+        pickUpDictionary = new()
+          {
+              {Resources.Wood,()=> PickUpWood(pos) }
+          };
 
     }
     public override void MakeAMove()
@@ -298,8 +308,58 @@ public class Player : Character
 
         MovementAfterInput();
     }
+    /*
+        private void ChopTree(Position position)
+        {
+            canMove = false;
+            currentChunk.smallTilesMap[position.col, position.row] = SmallTile.empty;
+            (int col, int row) tempCoordsOfDroppedItem = (position.col, position.row);
+            currentChunk.droppedResources.Add(tempCoordsOfDroppedItem, FactoryInventory.GetPouch(Resources.Wood, 1, 0, 0));
+
+        }
+    */
     private void ChopTree(Position position)
     {
-        
+        canMove = false;
+        currentChunk.smallTilesMap[position.col, position.row] = SmallTile.empty;
+
+        // Create a named tuple for the coordinates
+        var tempCoordsOfDroppedItem = new Tuple<int, int>(position.col, position.row);
+        // Get a Pouch object with the desired resource
+        Pouch droppedPouch = FactoryInventory.GetPouch(Resources.Wood, 1, 0, 0);
+
+        // Add the tuple and Pouch object to the list
+        currentChunk.droppedResources.Add((tempCoordsOfDroppedItem, droppedPouch));
+    }
+    private void PickUpWood(Position position)
+    {
+        bool wasAdded = false;
+        var positionToCheck = new Tuple<int, int>(position.col, position.row);
+
+        foreach (var droppedResource in currentChunk.droppedResources)
+        {
+            // Check if the coordinates of the dropped resource match the position
+            if (droppedResource.Item1.Equals(positionToCheck))
+            {
+                // Get the Pouch object
+                var pouch = droppedResource.Item2;
+
+                // Add the Pouch object to the inventory
+                for (int i = 0; i < inventories.Length; i++)
+                {
+                    if (inventories[i] == null)
+                    {
+                        inventories[i] = pouch;
+                        wasAdded = true;
+                        break;
+                    }
+                }
+            }
+            if (wasAdded) break;
+        }
+        if (wasAdded)
+        {
+            Console.Beep();
+        }
     }
 }
