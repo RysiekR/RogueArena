@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 public abstract class Character
 {
+    public int numberOfInventories;
+    public InventoryItem[] inventories;
+
     public Chunk currentChunk;
     public ChunkCoordinates currentChunkCoordinates;
     public ChunkCoordinates nextChunkCoordinates;
@@ -141,6 +144,7 @@ public abstract class Character
         //tu bedzie problem !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         if (canMove)
         {
+            CheckAndAddResources(ref pos);
             PutCharacterOnMap();
             PutPreviousTileOnScreen(previousPosition);
         }
@@ -151,6 +155,31 @@ public abstract class Character
 
         canMove = true;
     }
+
+    private void CheckAndAddResources(ref Position position)
+    {
+        var positionToCheck = new Tuple<int, int>(position.col, position.row);
+        bool futurePosContainsResource = false;
+        InventoryItem itemToAdd;
+        foreach (var droppedResource in currentChunk.droppedResources)
+        {
+            if(droppedResource.Item1 == positionToCheck)
+            {
+                futurePosContainsResource = true;
+            }
+            if(futurePosContainsResource)
+            {
+                break;
+            }
+        }
+        //wywolaj slownik pickUpDic
+        if (futurePosContainsResource)
+        {
+            Action pickUpDicAction = 
+        }
+
+    }
+
     private bool CheckIfChunkBorder(Position position)
     {
         if (position.col == currentChunk.leftBorder)
@@ -245,6 +274,7 @@ public class Enemy : Character
     private Random random = new Random();
     public Enemy(Position position, Chunk currentChunk) : base(position, currentChunk)
     {
+        numberOfInventories = 0;
         avatar = '$';
         this.currentChunk = currentChunk;
         pos = position;
@@ -278,11 +308,11 @@ public class Enemy : Character
 
 public class Player : Character
 {
-    public int numberOfInventories = 5;
-    public InventoryItem[] inventories;
     public Player(Position position, Chunk currentChunk) : base(position, currentChunk)
     {
+        numberOfInventories = 5;
         inventories = new InventoryItem[numberOfInventories];
+        for (int i = 0; i < inventories.Length; i++) { inventories[i] = null; }
         avatar = '@';
         this.currentChunk = currentChunk;
         pos = position;
@@ -330,6 +360,8 @@ public class Player : Character
 
         // Add the tuple and Pouch object to the list
         currentChunk.droppedResources.Add((tempCoordsOfDroppedItem, droppedPouch));
+        Console.SetCursorPosition(tempCoordsOfDroppedItem.Item1,tempCoordsOfDroppedItem.Item2);
+        Console.Write(ResDic.ResourcesCharRepresantation[droppedPouch.ResourceType]);
     }
     private void PickUpWood(Position position)
     {

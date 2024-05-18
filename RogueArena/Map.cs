@@ -308,7 +308,8 @@ public class Chunk
         foreach (var r in droppedResources)
         {
             Console.SetCursorPosition(r.Item1.Item1, r.Item1.Item2);
-            Console.Write('P');
+            Console.Write(ResDic.ResourcesCharRepresantation[r.Item2.ResourceType]);
+
         }
     }
 
